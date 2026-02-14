@@ -18,6 +18,17 @@ const tools = $state([
     </header>
 
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <a href="/uuid" class="flex flex-col rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md hover:border-indigo-200 group">
+        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 font-bold group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+          ID
+        </div>
+        <h2 class="text-xl font-semibold text-slate-900">UUID Generator</h2>
+        <p class="mt-2 text-slate-500">Generate and validate RFC 4122 UUIDs</p>
+        <span class="mt-6 inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors group-hover:bg-indigo-700">
+          Open Tool
+        </span>
+      </a>
+
       {#each tools as tool}
         <div class="flex flex-col rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
           <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 font-bold">
