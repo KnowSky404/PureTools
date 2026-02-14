@@ -34,3 +34,18 @@ https://svelte.dev/e/constant_binding
    86 |              placeholder="Paste UUID to validate..."
    87 |              class="w-full rounded-lg border px-4 py-3 font-mono text-sm focus:ring-2 focus:ring-indigo-500 outline-none
 ```
+
+
+现在还是有这个错误，请帮我修复一下
+```
+1:33:04 PM [vite] Internal server error: src/routes/uuid/+page.svelte:85:12 Cannot bind to constant
+https://svelte.dev/e/constant_binding
+  Plugin: vite-plugin-svelte:compile
+  File: src/routes/uuid/+page.svelte:85:12
+   83 |            <input
+   84 |              type="text"
+   85 |              bind:value={validationInput}
+                                                 ^
+   86 |              placeholder="Paste UUID to validate..."
+   87 |              class="w-full rounded-lg border px-4 py-3 font-mono text-sm focus:ring-2 focus:ring-indigo-500 outline-none (x3)
+```
