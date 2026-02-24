@@ -2,17 +2,13 @@
 import { copyToClipboard, generateUUID, validateUUID } from "$lib/utils/uuid";
 
 // State using Svelte 5 Runes
-// biome-ignore lint/correctness/noUnusedVariables: used in markup.
 let currentUuid = $state("");
-// biome-ignore lint/style/useConst: bound via bind:value in markup.
 let validationInput = $state("");
 let history = $state<{ id: string; timestamp: number }[]>([]);
 let copyStatus = $state("Copy");
-// biome-ignore lint/correctness/noUnusedVariables: used in markup.
 const isValid = $derived(validationInput ? validateUUID(validationInput) : null);
 
 // Generate and copy to clipboard
-// biome-ignore lint/correctness/noUnusedVariables: used as an event handler in markup.
 async function handleGenerate() {
   const newUuid = generateUUID();
   currentUuid = newUuid;
@@ -25,12 +21,10 @@ async function handleGenerate() {
   }
 }
 
-// biome-ignore lint/correctness/noUnusedVariables: used as an event handler in markup.
 async function handleCopy(text: string) {
   await copyToClipboard(text);
 }
 
-// biome-ignore lint/correctness/noUnusedVariables: used as an event handler in markup.
 function clearHistory() {
   history = [];
 }

@@ -71,3 +71,4 @@ https://svelte.dev/e/constant_binding
 修复记录：将 `validationInput` 从 `const` 改为 `let`，以允许 `bind:value` 正常工作。
 
 补充修复：为 Biome 的 Svelte 误报添加忽略注释，消除 `noUnused*` 警告。
+配置优化：Biome 的 Svelte 覆盖规则改为匹配 `**/*.svelte`，并移除文件内的忽略注释。
