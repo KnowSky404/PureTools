@@ -49,3 +49,21 @@ https://svelte.dev/e/constant_binding
    86 |              placeholder="Paste UUID to validate..."
    87 |              class="w-full rounded-lg border px-4 py-3 font-mono text-sm focus:ring-2 focus:ring-indigo-500 outline-none (x3)
 ```
+
+## 20260224
+
+目前我还在完善我的这个纯前端的工具网站，现在在开发UUID生成的这个工具的时候，提示以下错误
+```
+[plugin:vite-plugin-svelte:compile] src/routes/uuid/+page.svelte:85:12 Cannot bind to constant
+https://svelte.dev/e/constant_binding
+
++page.svelte:85:12
+
+83 |            <input
+ 84 |              type="text"
+ 85 |              bind:value={validationInput}
+                                               ^
+ 86 |              placeholder="Paste UUID to validate..."
+ 87 |              class="w-full rounded-lg border px-4 py-3 font-mono text-sm focus:ring-2 focus:ring-indigo-500 outline-none
+```
+能帮我修复一下吗
