@@ -44,9 +44,9 @@ const tools = $state([
       {#each tools as tool}
         <a
           href={tool.href}
-          class="group flex flex-col rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+          class="group flex flex-col rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-indigo-200 hover:shadow-md"
         >
-          <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 font-bold">
+          <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 font-bold transition-colors group-hover:bg-indigo-600 group-hover:text-white">
             {tool.icon}
           </div>
           <h2 class="text-xl font-semibold text-slate-900">{tool.name}</h2>

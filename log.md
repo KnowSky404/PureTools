@@ -101,3 +101,4 @@ SQL Format
 更新：JSON Formatter 输入/输出区域新增行号显示并同步滚动。
 更新：SQL Formatter 增强为可格式化/压缩的工具页，支持基础校验、行号、复制与示例。
 更新：首页卡片按钮尺寸统一，确保 Open Tool 高度与宽度一致。
+修复：首页 JSON/SQL 卡片补充悬浮高亮样式，与 UUID 卡片一致。
