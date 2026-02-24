@@ -11,6 +11,10 @@ let mode = $state<FormatMode>("format");
 let indent = $state<IndentSize>(2);
 let copyStatus = $state("Copy");
 let highlightOutput = $state(true);
+let inputEl = $state<HTMLTextAreaElement | null>(null);
+let inputLinesWrap = $state<HTMLDivElement | null>(null);
+let outputScrollEl = $state<HTMLDivElement | null>(null);
+let outputLinesWrap = $state<HTMLDivElement | null>(null);
 
 const inputStats = $derived.by(() => {
   if (!input) {
@@ -25,6 +29,11 @@ const outputStats = $derived.by(() => {
   }
   return { chars: output.length, lines: output.split("\n").length };
 });
+
+const inputLineCount = $derived.by(() => Math.max(1, input.split("\n").length));
+const outputLineCount = $derived.by(() => Math.max(1, output.split("\n").length));
+const inputLineNumbers = $derived.by(() => buildLineNumbers(inputLineCount));
+const outputLineNumbers = $derived.by(() => buildLineNumbers(outputLineCount));
 
 const highlightedOutput = $derived.by(() => {
   if (!output || !highlightOutput) {
@@ -84,6 +93,20 @@ function handleHighlightToggle() {
   highlightOutput = !highlightOutput;
 }
 
+function syncInputScroll() {
+  if (!inputEl || !inputLinesWrap) {
+    return;
+  }
+  inputLinesWrap.scrollTop = inputEl.scrollTop;
+}
+
+function syncOutputScroll() {
+  if (!outputScrollEl || !outputLinesWrap) {
+    return;
+  }
+  outputLinesWrap.scrollTop = outputScrollEl.scrollTop;
+}
+
 async function handleCopy() {
   if (!output) {
     return;
@@ -110,6 +133,10 @@ function handleExample() {
 
 function escapeHtml(value: string): string {
   return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
+function buildLineNumbers(total: number): string {
+  return Array.from({ length: total }, (_, index) => `${index + 1}`).join("\n");
 }
 
 function highlightJson(value: string): string {
@@ -238,11 +265,23 @@ function highlightJson(value: string): string {
         <span>Input</span>
         <span>{inputStats.lines} lines · {inputStats.chars} chars</span>
       </div>
-      <textarea
-        bind:value={input}
-        placeholder="Paste JSON here..."
-        class="min-h-[320px] w-full rounded-xl border border-slate-200 bg-white px-4 py-3 font-mono text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-      ></textarea>
+      <div class="flex min-h-[320px] w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div class="w-12 border-r border-slate-200 bg-slate-50 text-slate-400">
+          <div
+            class="h-full overflow-hidden px-2 py-3 font-mono text-xs leading-6"
+            bind:this={inputLinesWrap}
+          >
+            <pre class="whitespace-pre">{inputLineNumbers}</pre>
+          </div>
+        </div>
+        <textarea
+          bind:this={inputEl}
+          bind:value={input}
+          placeholder="Paste JSON here..."
+          onscroll={syncInputScroll}
+          class="min-h-[320px] flex-1 resize-none px-4 py-3 font-mono text-sm leading-6 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        ></textarea>
+      </div>
       {#if error}
         <p class="text-sm font-medium text-red-600">{error}</p>
       {:else if input.trim()}
@@ -255,16 +294,30 @@ function highlightJson(value: string): string {
         <span>Output</span>
         <span>{outputStats.lines} lines · {outputStats.chars} chars</span>
       </div>
-      <div class="min-h-[320px] w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 font-mono text-sm text-slate-900 shadow-sm">
-        {#if output}
-          {#if highlightOutput}
-            <pre class="whitespace-pre-wrap break-words"><code>{@html highlightedOutput}</code></pre>
+      <div class="flex min-h-[320px] w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm">
+        <div class="w-12 border-r border-slate-200 bg-slate-100 text-slate-400">
+          <div
+            class="h-full overflow-hidden px-2 py-3 font-mono text-xs leading-6"
+            bind:this={outputLinesWrap}
+          >
+            <pre class="whitespace-pre">{outputLineNumbers}</pre>
+          </div>
+        </div>
+        <div
+          class="flex-1 overflow-auto px-4 py-3 font-mono text-sm leading-6 text-slate-900"
+          bind:this={outputScrollEl}
+          onscroll={syncOutputScroll}
+        >
+          {#if output}
+            {#if highlightOutput}
+              <pre class="whitespace-pre-wrap break-words"><code>{@html highlightedOutput}</code></pre>
+            {:else}
+              <pre class="whitespace-pre-wrap break-words">{output}</pre>
+            {/if}
           {:else}
-            <pre class="whitespace-pre-wrap break-words">{output}</pre>
+            <p class="text-slate-400">Formatted JSON will appear here...</p>
           {/if}
-        {:else}
-          <p class="text-slate-400">Formatted JSON will appear here...</p>
-        {/if}
+        </div>
       </div>
     </div>
   </div>

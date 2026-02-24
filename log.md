@@ -98,3 +98,4 @@ SQL Format
 更新：JSON Formatter 增加压缩、转义、语法高亮与复制输出能力，完善校验与格式化体验。
 更新：JSON Formatter 新增反转义（Unescape）模式，支持将转义字符串还原为可读 JSON。
 修复：JSON Formatter 高亮输出显示为函数的问题，改用 `$derived.by`。
+更新：JSON Formatter 输入/输出区域新增行号显示并同步滚动。
