@@ -12,6 +12,12 @@ const tools = $state([
     icon: "SQL",
     href: "/sql",
   },
+  {
+    name: "GitHub CDN",
+    description: "Convert GitHub file links to jsDelivr CDN URLs",
+    icon: "CDN",
+    href: "/jsdelivr",
+  },
 ]);
 </script>
 
