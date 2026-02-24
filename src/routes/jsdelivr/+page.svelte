@@ -104,13 +104,13 @@ function convertGitHubUrl(url: URL): string {
       throw new Error("Release URLs must include a tag.");
     }
     if (releaseKind === "tag") {
-      return buildJsdelivrBaseUrl(owner, repo, tag);
+      return buildJsdelivrUrl(owner, repo, "releases", ["tag", tag, ...pathSegments]);
     }
     if (releaseKind === "download") {
       if (pathSegments.length === 0) {
         throw new Error("Release download URL must include a file path.");
       }
-      return buildJsdelivrUrl(owner, repo, tag, pathSegments);
+      return buildJsdelivrUrl(owner, repo, "releases", ["download", tag, ...pathSegments]);
     }
     throw new Error("Unsupported release URL. Use /releases/tag or /releases/download.");
   }
