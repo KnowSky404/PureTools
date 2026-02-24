@@ -280,6 +280,10 @@ function buildJsdelivrUrl(
         ></textarea>
         {#if rawNotice}
           <p class="text-sm font-medium text-amber-600">{rawNotice}</p>
+          <p class="text-xs text-slate-500">
+            Tip: use a GitHub file URL like
+            <span class="font-mono">/blob/branch/path/file</span> to generate a raw link.
+          </p>
         {/if}
       </div>
 

@@ -108,3 +108,4 @@ SQL Format
 修复：GitHub release 下载链接转换为 jsDelivr 时保留 `releases/download` 路径。
 更新：GitHub CDN 工具提示 jsDelivr 不支持 release assets，建议使用 GitHub 直链。
 更新：GitHub CDN 工具同时输出 Raw 与 jsDelivr 两个链接并分别提供复制按钮。
+更新：Raw 输出不可用时提示使用 GitHub blob 文件链接。
