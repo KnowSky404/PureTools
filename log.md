@@ -82,6 +82,17 @@ https://svelte.dev/e/constant_binding
 修正：去掉 `commit-msg` 中 Husky v9 已弃用的引导行，避免警告与未来升级风险。
 更新：扩展 `commit-msg` 允许的提交类型（feat/fix/docs/style/refactor/perf/test/build/ci/chore/revert）。
 更新：移除首页中 UUID 的占位卡片，避免与已完成的工具重复。
-更新：首页 JSON/SQL 卡片改为可点击路由，并新增 JSON Formatter 页面与 SQL 占位页。
 
 我现在还需要调整首页的内容，就是目前UUID不是已经完成开发了，那么之前预留的那个卡片占位符可以去掉了
+
+JSON Format 在以上改动的基础上，需要包含的功能:
+1. JSON的压缩
+2. JSON的格式化
+3. JSON的格式校验
+4. JSON的转义
+5. JSON的语法高亮
+6. JSON的复制按钮
+
+SQL Format
+
+更新：JSON Formatter 增加压缩、转义、语法高亮与复制输出能力，完善校验与格式化体验。
