@@ -4,48 +4,70 @@ import { copyToClipboard } from "$lib/utils/clipboard";
 type HostKind = "github" | "raw" | "unknown";
 
 let input = $state("");
-let output = $state("");
+let rawOutput = $state("");
+let cdnOutput = $state("");
 let error = $state("");
-let copyStatus = $state("Copy");
-let notice = $state("");
+let rawCopyStatus = $state("Copy Raw");
+let cdnCopyStatus = $state("Copy CDN");
+let rawNotice = $state("");
+let cdnNotice = $state("");
 
 $effect(() => {
   const value = input.trim();
 
   const timer = setTimeout(() => {
     if (!value) {
-      output = "";
+      rawOutput = "";
+      cdnOutput = "";
+      rawNotice = "";
+      cdnNotice = "";
       error = "";
       return;
     }
 
     try {
       const result = convertToJsdelivr(value);
-      output = result.output;
-      notice = result.notice;
+      rawOutput = result.rawUrl;
+      cdnOutput = result.cdnUrl;
+      rawNotice = result.rawNotice;
+      cdnNotice = result.cdnNotice;
       error = "";
     } catch (err) {
-      output = "";
+      rawOutput = "";
+      cdnOutput = "";
+      rawNotice = "";
+      cdnNotice = "";
       error = err instanceof Error ? err.message : "Failed to convert URL";
-      notice = "";
     }
   }, 250);
 
   return () => clearTimeout(timer);
 });
 
-async function handleCopy() {
-  if (!output) {
+async function handleCopyRaw() {
+  if (!rawOutput) {
     return;
   }
-  const success = await copyToClipboard(output);
-  copyStatus = success ? "Copied!" : "Copy failed";
-  setTimeout(() => (copyStatus = "Copy"), 1500);
+  const success = await copyToClipboard(rawOutput);
+  rawCopyStatus = success ? "Copied!" : "Copy failed";
+  setTimeout(() => (rawCopyStatus = "Copy Raw"), 1500);
+}
+
+async function handleCopyCdn() {
+  if (!cdnOutput) {
+    return;
+  }
+  const success = await copyToClipboard(cdnOutput);
+  cdnCopyStatus = success ? "Copied!" : "Copy failed";
+  setTimeout(() => (cdnCopyStatus = "Copy CDN"), 1500);
 }
 
 function handleClear() {
   input = "";
-  output = "";
+  rawOutput = "";
+  cdnOutput = "";
+  rawNotice = "";
+  cdnNotice = "";
   error = "";
 }
 
@@ -53,7 +75,12 @@ function handleExample() {
   input = "https://github.com/sveltejs/kit/blob/main/packages/kit/README.md";
 }
 
-type ConvertResult = { output: string; notice: string };
+type ConvertResult = {
+  rawUrl: string;
+  cdnUrl: string;
+  rawNotice: string;
+  cdnNotice: string;
+};
 
 function convertToJsdelivr(value: string): ConvertResult {
   let url: URL;
@@ -71,7 +98,9 @@ function convertToJsdelivr(value: string): ConvertResult {
   if (hostKind === "github") {
     return convertGitHubUrl(url);
   }
-  return { output: convertRawUrl(url), notice: "" };
+  const rawUrl = convertRawUrl(url);
+  const cdnUrl = convertRawToJsdelivr(url);
+  return { rawUrl, cdnUrl, rawNotice: "", cdnNotice: "" };
 }
 
 function detectHostKind(hostname: string): HostKind {
@@ -98,9 +127,19 @@ function convertGitHubUrl(url: URL): ConvertResult {
       throw new Error("Missing branch or tag in the GitHub URL.");
     }
     if (pathSegments.length === 0) {
-      return { output: buildJsdelivrBaseUrl(owner, repo, ref), notice: "" };
+      return {
+        rawUrl: "",
+        cdnUrl: buildJsdelivrBaseUrl(owner, repo, ref),
+        rawNotice: "Raw URLs require a file path.",
+        cdnNotice: "",
+      };
     }
-    return { output: buildJsdelivrUrl(owner, repo, ref, pathSegments), notice: "" };
+    return {
+      rawUrl: buildRawUrl(owner, repo, ref, pathSegments),
+      cdnUrl: buildJsdelivrUrl(owner, repo, ref, pathSegments),
+      rawNotice: "",
+      cdnNotice: "",
+    };
   }
 
   if (type === "releases") {
@@ -109,9 +148,12 @@ function convertGitHubUrl(url: URL): ConvertResult {
       throw new Error("Release URLs must include a tag.");
     }
     if (releaseKind === "tag") {
+      const baseUrl = buildJsdelivrBaseUrl(owner, repo, tag);
       return {
-        output: buildJsdelivrUrl(owner, repo, "releases", ["tag", tag, ...pathSegments]),
-        notice: "",
+        rawUrl: "",
+        cdnUrl: pathSegments.length ? buildJsdelivrUrl(owner, repo, tag, pathSegments) : baseUrl,
+        rawNotice: "Release pages do not provide raw file URLs.",
+        cdnNotice: "Using the tag for CDN. Release assets are not supported by jsDelivr.",
       };
     }
     if (releaseKind === "download") {
@@ -119,8 +161,10 @@ function convertGitHubUrl(url: URL): ConvertResult {
         throw new Error("Release download URL must include a file path.");
       }
       return {
-        output: buildJsdelivrUrl(owner, repo, "releases", ["download", tag, ...pathSegments]),
-        notice:
+        rawUrl: "",
+        cdnUrl: buildJsdelivrUrl(owner, repo, "releases", ["download", tag, ...pathSegments]),
+        rawNotice: "Release assets do not have raw URLs.",
+        cdnNotice:
           "jsDelivr does not serve GitHub release assets. Use the GitHub release URL instead.",
       };
     }
@@ -138,14 +182,25 @@ function convertRawUrl(url: URL): string {
 
   const [owner, repo, ref, ...pathSegments] = segments;
   if (pathSegments.length === 0) {
-    return buildJsdelivrBaseUrl(owner, repo, ref);
+    throw new Error("Raw GitHub URL must include a file path.");
   }
 
+  return buildRawUrl(owner, repo, ref, pathSegments);
+}
+
+function convertRawToJsdelivr(url: URL): string {
+  const segments = url.pathname.split("/").filter(Boolean);
+  const [owner, repo, ref, ...pathSegments] = segments;
   return buildJsdelivrUrl(owner, repo, ref, pathSegments);
 }
 
 function buildJsdelivrBaseUrl(owner: string, repo: string, ref: string): string {
   return `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${ref}/`;
+}
+
+function buildRawUrl(owner: string, repo: string, ref: string, pathSegments: string[]): string {
+  const encodedPath = pathSegments.map((segment) => encodeURIComponent(segment)).join("/");
+  return `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/${encodedPath}`;
 }
 
 function buildJsdelivrUrl(
@@ -186,14 +241,6 @@ function buildJsdelivrUrl(
       >
         Clear
       </button>
-      <button
-        type="button"
-        onclick={handleCopy}
-        class="ml-auto rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:bg-indigo-700"
-        disabled={!output}
-      >
-        {copyStatus}
-      </button>
     </div>
   </div>
 
@@ -209,25 +256,60 @@ function buildJsdelivrUrl(
         <p class="text-sm font-medium text-red-600">{error}</p>
       {:else if input.trim()}
         <p class="text-sm font-medium text-green-600">Valid GitHub link</p>
-        {#if output.endsWith("/")}
+      {/if}
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center justify-between text-xs text-slate-500">
+          <span>Raw URL</span>
+          <button
+            type="button"
+            onclick={handleCopyRaw}
+            class="rounded-lg bg-slate-100 px-2 py-1 text-[11px] font-semibold text-slate-600 hover:bg-slate-200"
+            disabled={!rawOutput}
+          >
+            {rawCopyStatus}
+          </button>
+        </div>
+        <textarea
+          readonly
+          value={rawOutput}
+          placeholder="https://raw.githubusercontent.com/owner/repo/branch/path/file.js"
+          class="min-h-[140px] w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 font-mono text-sm text-slate-900 shadow-sm focus:outline-none"
+        ></textarea>
+        {#if rawNotice}
+          <p class="text-sm font-medium text-amber-600">{rawNotice}</p>
+        {/if}
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center justify-between text-xs text-slate-500">
+          <span>jsDelivr CDN URL</span>
+          <button
+            type="button"
+            onclick={handleCopyCdn}
+            class="rounded-lg bg-indigo-600 px-2 py-1 text-[11px] font-semibold text-white hover:bg-indigo-700"
+            disabled={!cdnOutput}
+          >
+            {cdnCopyStatus}
+          </button>
+        </div>
+        <textarea
+          readonly
+          value={cdnOutput}
+          placeholder="https://cdn.jsdelivr.net/gh/owner/repo@branch/path/file.js"
+          class="min-h-[140px] w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 font-mono text-sm text-slate-900 shadow-sm focus:outline-none"
+        ></textarea>
+        {#if cdnNotice}
+          <p class="text-sm font-medium text-amber-600">{cdnNotice}</p>
+        {/if}
+        {#if cdnOutput.endsWith("/")}
           <p class="text-xs text-slate-500">
             Tip: append a file path after the trailing slash to get a direct file CDN URL.
           </p>
         {/if}
-      {/if}
-    </div>
-
-    <div class="flex flex-col gap-3">
-      <div class="text-xs text-slate-500">jsDelivr CDN URL</div>
-      <textarea
-        readonly
-        value={output}
-        placeholder="https://cdn.jsdelivr.net/gh/owner/repo@branch/path/file.js"
-        class="min-h-[220px] w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 font-mono text-sm text-slate-900 shadow-sm focus:outline-none"
-      ></textarea>
-      {#if notice}
-        <p class="text-sm font-medium text-amber-600">{notice}</p>
-      {/if}
+      </div>
     </div>
   </div>
 </div>
