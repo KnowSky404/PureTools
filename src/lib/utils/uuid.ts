@@ -18,13 +18,3 @@ export function getUUIDVersion(uuid: string): number | null {
   }
   return Number.parseInt(uuid.charAt(14), 10);
 }
-
-export async function copyToClipboard(text: string): Promise<boolean> {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch (err) {
-    console.error("Failed to copy text: ", err);
-    return false;
-  }
-}

@@ -1,5 +1,6 @@
 <script lang="ts">
-import { copyToClipboard, generateUUID, validateUUID } from "$lib/utils/uuid";
+import { copyToClipboard } from "$lib/utils/clipboard";
+import { generateUUID, validateUUID } from "$lib/utils/uuid";
 
 // State using Svelte 5 Runes
 let currentUuid = $state("");
