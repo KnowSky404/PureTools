@@ -81,22 +81,41 @@ function detectHostKind(hostname: string): HostKind {
 
 function convertGitHubUrl(url: URL): string {
   const segments = url.pathname.split("/").filter(Boolean);
-  if (segments.length < 5) {
-    throw new Error("Please use a file URL like /owner/repo/blob/branch/path/file.");
+  if (segments.length < 3) {
+    throw new Error("Please use a valid GitHub repository URL.");
   }
 
-  const [owner, repo, type, ref, ...pathSegments] = segments;
-  if (type !== "blob" && type !== "tree") {
-    throw new Error("Only GitHub blob/tree URLs can be converted.");
-  }
-  if (!ref) {
-    throw new Error("Missing branch or tag in the GitHub URL.");
-  }
-  if (pathSegments.length === 0) {
-    throw new Error("Please provide a file path after the branch name.");
+  const [owner, repo, type, ...rest] = segments;
+
+  if (type === "blob" || type === "tree") {
+    const [ref, ...pathSegments] = rest;
+    if (!ref) {
+      throw new Error("Missing branch or tag in the GitHub URL.");
+    }
+    if (pathSegments.length === 0) {
+      return buildJsdelivrBaseUrl(owner, repo, ref);
+    }
+    return buildJsdelivrUrl(owner, repo, ref, pathSegments);
   }
 
-  return buildJsdelivrUrl(owner, repo, ref, pathSegments);
+  if (type === "releases") {
+    const [releaseKind, tag, ...pathSegments] = rest;
+    if (!releaseKind || !tag) {
+      throw new Error("Release URLs must include a tag.");
+    }
+    if (releaseKind === "tag") {
+      return buildJsdelivrBaseUrl(owner, repo, tag);
+    }
+    if (releaseKind === "download") {
+      if (pathSegments.length === 0) {
+        throw new Error("Release download URL must include a file path.");
+      }
+      return buildJsdelivrUrl(owner, repo, tag, pathSegments);
+    }
+    throw new Error("Unsupported release URL. Use /releases/tag or /releases/download.");
+  }
+
+  throw new Error("Only GitHub blob/tree or release URLs can be converted.");
 }
 
 function convertRawUrl(url: URL): string {
@@ -107,10 +126,14 @@ function convertRawUrl(url: URL): string {
 
   const [owner, repo, ref, ...pathSegments] = segments;
   if (pathSegments.length === 0) {
-    throw new Error("Raw GitHub URL must include a file path.");
+    return buildJsdelivrBaseUrl(owner, repo, ref);
   }
 
   return buildJsdelivrUrl(owner, repo, ref, pathSegments);
+}
+
+function buildJsdelivrBaseUrl(owner: string, repo: string, ref: string): string {
+  return `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${ref}/`;
 }
 
 function buildJsdelivrUrl(
@@ -167,13 +190,13 @@ function buildJsdelivrUrl(
       <div class="text-xs text-slate-500">GitHub URL</div>
       <textarea
         bind:value={input}
-        placeholder="https://github.com/owner/repo/blob/branch/path/file.js"
+        placeholder="https://github.com/owner/repo/blob/branch/path/file.js or https://github.com/owner/repo/releases/tag/v1.0.0"
         class="min-h-[220px] w-full rounded-xl border border-slate-200 bg-white px-4 py-3 font-mono text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
       ></textarea>
       {#if error}
         <p class="text-sm font-medium text-red-600">{error}</p>
       {:else if input.trim()}
-        <p class="text-sm font-medium text-green-600">Valid GitHub file link</p>
+        <p class="text-sm font-medium text-green-600">Valid GitHub link</p>
       {/if}
     </div>
 

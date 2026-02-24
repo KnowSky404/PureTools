@@ -103,3 +103,4 @@ SQL Format
 更新：首页卡片按钮尺寸统一，确保 Open Tool 高度与宽度一致。
 修复：首页 JSON/SQL 卡片补充悬浮高亮样式，与 UUID 卡片一致。
 新增：GitHub 链接转 jsDelivr CDN 工具页与首页入口。
+更新：GitHub 链接转换支持 tree 目录与 release 链接（tag/download）。
