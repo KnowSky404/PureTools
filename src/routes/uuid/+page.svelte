@@ -1,10 +1,10 @@
 <script lang="ts">
-import { onMount } from "svelte";
 import { copyToClipboard, generateUUID, validateUUID } from "$lib/utils/uuid";
 
 // State using Svelte 5 Runes
 let currentUuid = $state("");
-const validationInput = $state("");
+// biome-ignore lint/style/useConst: bound via bind:value in markup.
+let validationInput = $state("");
 let history = $state<{ id: string; timestamp: number }[]>([]);
 let copyStatus = $state("Copy");
 const isValid = $derived(validationInput ? validateUUID(validationInput) : null);

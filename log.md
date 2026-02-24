@@ -67,3 +67,5 @@ https://svelte.dev/e/constant_binding
  87 |              class="w-full rounded-lg border px-4 py-3 font-mono text-sm focus:ring-2 focus:ring-indigo-500 outline-none
 ```
 能帮我修复一下吗
+
+修复记录：将 `validationInput` 从 `const` 改为 `let`，以允许 `bind:value` 正常工作。
