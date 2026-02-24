@@ -197,6 +197,11 @@ function buildJsdelivrUrl(
         <p class="text-sm font-medium text-red-600">{error}</p>
       {:else if input.trim()}
         <p class="text-sm font-medium text-green-600">Valid GitHub link</p>
+        {#if output.endsWith("/")}
+          <p class="text-xs text-slate-500">
+            Tip: append a file path after the trailing slash to get a direct file CDN URL.
+          </p>
+        {/if}
       {/if}
     </div>
 
