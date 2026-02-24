@@ -2,7 +2,6 @@
 const tools = $state([
   { name: "JSON Formatter", description: "Format and validate JSON", icon: "JSON" },
   { name: "SQL Formatter", description: "Beautify your SQL queries", icon: "SQL" },
-  { name: "UUID Generator", description: "Generate random UUIDs", icon: "ID" },
 ]);
 </script>
 
