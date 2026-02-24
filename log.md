@@ -100,3 +100,4 @@ SQL Format
 修复：JSON Formatter 高亮输出显示为函数的问题，改用 `$derived.by`。
 更新：JSON Formatter 输入/输出区域新增行号显示并同步滚动。
 更新：SQL Formatter 增强为可格式化/压缩的工具页，支持基础校验、行号、复制与示例。
+更新：首页卡片按钮尺寸统一，确保 Open Tool 高度与宽度一致。
