@@ -79,3 +79,4 @@ https://svelte.dev/e/constant_binding
 更新：加入 `wrangler` 到 `devDependencies`，用于 Cloudflare Workers 部署命令。
 
 更新：新增 `commit-msg` 钩子，强制提交信息遵循 `feat:` / `docs:` / `chore:` 规范。
+修正：去掉 `commit-msg` 中 Husky v9 已弃用的引导行，避免警告与未来升级风险。
