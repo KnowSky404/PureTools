@@ -75,3 +75,5 @@ https://svelte.dev/e/constant_binding
 配置优化：`lint` 脚本串联 `svelte-check`，并在 `tsconfig.json` 中开启 `noUnusedLocals` 与 `noUnusedParameters` 以获得更准确的 Svelte 脚本级提示。
 
 新增：添加 `wrangler.toml`，用于 Cloudflare Workers 部署（适配 SvelteKit adapter-cloudflare 输出）。
+
+更新：加入 `wrangler` 到 `devDependencies`，用于 Cloudflare Workers 部署命令。
