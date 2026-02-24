@@ -96,3 +96,4 @@ JSON Format 在以上改动的基础上，需要包含的功能:
 SQL Format
 
 更新：JSON Formatter 增加压缩、转义、语法高亮与复制输出能力，完善校验与格式化体验。
+更新：JSON Formatter 新增反转义（Unescape）模式，支持将转义字符串还原为可读 JSON。

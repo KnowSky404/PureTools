@@ -1,7 +1,7 @@
 <script lang="ts">
 import { copyToClipboard } from "$lib/utils/clipboard";
 
-type FormatMode = "format" | "minify" | "escape";
+type FormatMode = "format" | "minify" | "escape" | "unescape";
 type IndentSize = 2 | 4;
 
 let input = $state("");
@@ -46,11 +46,26 @@ $effect(() => {
     }
 
     try {
-      const parsed = JSON.parse(value);
-      const normalized =
-        currentMode === "format" ? JSON.stringify(parsed, null, spaces) : JSON.stringify(parsed);
-      output = currentMode === "escape" ? JSON.stringify(normalized) : normalized;
-      error = "";
+      if (currentMode === "unescape") {
+        const parsed = JSON.parse(value);
+        if (typeof parsed !== "string") {
+          throw new Error("Unescape expects a JSON string value.");
+        }
+        const unescaped = parsed;
+        try {
+          const decodedJson = JSON.parse(unescaped);
+          output = JSON.stringify(decodedJson, null, spaces);
+        } catch {
+          output = unescaped;
+        }
+        error = "";
+      } else {
+        const parsed = JSON.parse(value);
+        const normalized =
+          currentMode === "format" ? JSON.stringify(parsed, null, spaces) : JSON.stringify(parsed);
+        output = currentMode === "escape" ? JSON.stringify(normalized) : normalized;
+        error = "";
+      }
     } catch (err) {
       output = "";
       error = err instanceof Error ? err.message : "Invalid JSON";
@@ -88,7 +103,7 @@ function handleExample() {
   input = `{
   "name": "PureTools",
   "version": "0.1.0",
-  "features": ["format", "minify", "validate"],
+  "features": ["format", "minify", "escape", "unescape", "validate"],
   "meta": { "source": "browser", "fast": true }
 }`;
 }
@@ -134,7 +149,7 @@ function highlightJson(value: string): string {
     <div>
       <h1 class="text-3xl font-bold text-slate-900">JSON Formatter</h1>
       <p class="text-slate-500">
-        Format, minify, escape, and validate JSON in your browser.
+        Format, minify, escape, unescape, and validate JSON in your browser.
       </p>
     </div>
     <a href="/" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
@@ -168,11 +183,19 @@ function highlightJson(value: string): string {
       >
         Escape
       </button>
+      <button
+        type="button"
+        onclick={() => (mode = "unescape")}
+        class="rounded-lg px-3 py-2 text-xs font-semibold transition-colors
+        {mode === 'unescape' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+      >
+        Unescape
+      </button>
       <select
         value={indent}
         onchange={handleIndentChange}
         class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700"
-        disabled={mode !== "format"}
+        disabled={mode === "minify" || mode === "escape"}
       >
         <option value={2}>2 spaces</option>
         <option value={4}>4 spaces</option>
