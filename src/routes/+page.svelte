@@ -1,4 +1,5 @@
 <script lang="ts">
+// biome-ignore lint/correctness/noUnusedVariables: used in markup.
 const tools = $state([
   { name: "JSON Formatter", description: "Format and validate JSON", icon: "JSON" },
   { name: "SQL Formatter", description: "Beautify your SQL queries", icon: "SQL" },
