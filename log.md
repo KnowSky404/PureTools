@@ -77,3 +77,5 @@ https://svelte.dev/e/constant_binding
 新增：添加 `wrangler.toml`，用于 Cloudflare Workers 部署（适配 SvelteKit adapter-cloudflare 输出）。
 
 更新：加入 `wrangler` 到 `devDependencies`，用于 Cloudflare Workers 部署命令。
+
+更新：新增 `commit-msg` 钩子，强制提交信息遵循 `feat:` / `docs:` / `chore:` 规范。
