@@ -106,3 +106,4 @@ SQL Format
 更新：GitHub 链接转换支持 tree 目录与 release 链接（tag/download）。
 更新：GitHub CDN 工具在输出目录地址时提示可追加文件路径。
 修复：GitHub release 下载链接转换为 jsDelivr 时保留 `releases/download` 路径。
+更新：GitHub CDN 工具提示 jsDelivr 不支持 release assets，建议使用 GitHub 直链。

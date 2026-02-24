@@ -7,6 +7,7 @@ let input = $state("");
 let output = $state("");
 let error = $state("");
 let copyStatus = $state("Copy");
+let notice = $state("");
 
 $effect(() => {
   const value = input.trim();
@@ -20,11 +21,13 @@ $effect(() => {
 
     try {
       const result = convertToJsdelivr(value);
-      output = result;
+      output = result.output;
+      notice = result.notice;
       error = "";
     } catch (err) {
       output = "";
       error = err instanceof Error ? err.message : "Failed to convert URL";
+      notice = "";
     }
   }, 250);
 
@@ -50,7 +53,9 @@ function handleExample() {
   input = "https://github.com/sveltejs/kit/blob/main/packages/kit/README.md";
 }
 
-function convertToJsdelivr(value: string): string {
+type ConvertResult = { output: string; notice: string };
+
+function convertToJsdelivr(value: string): ConvertResult {
   let url: URL;
   try {
     url = new URL(value);
@@ -66,7 +71,7 @@ function convertToJsdelivr(value: string): string {
   if (hostKind === "github") {
     return convertGitHubUrl(url);
   }
-  return convertRawUrl(url);
+  return { output: convertRawUrl(url), notice: "" };
 }
 
 function detectHostKind(hostname: string): HostKind {
@@ -79,7 +84,7 @@ function detectHostKind(hostname: string): HostKind {
   return "unknown";
 }
 
-function convertGitHubUrl(url: URL): string {
+function convertGitHubUrl(url: URL): ConvertResult {
   const segments = url.pathname.split("/").filter(Boolean);
   if (segments.length < 3) {
     throw new Error("Please use a valid GitHub repository URL.");
@@ -93,9 +98,9 @@ function convertGitHubUrl(url: URL): string {
       throw new Error("Missing branch or tag in the GitHub URL.");
     }
     if (pathSegments.length === 0) {
-      return buildJsdelivrBaseUrl(owner, repo, ref);
+      return { output: buildJsdelivrBaseUrl(owner, repo, ref), notice: "" };
     }
-    return buildJsdelivrUrl(owner, repo, ref, pathSegments);
+    return { output: buildJsdelivrUrl(owner, repo, ref, pathSegments), notice: "" };
   }
 
   if (type === "releases") {
@@ -104,13 +109,20 @@ function convertGitHubUrl(url: URL): string {
       throw new Error("Release URLs must include a tag.");
     }
     if (releaseKind === "tag") {
-      return buildJsdelivrUrl(owner, repo, "releases", ["tag", tag, ...pathSegments]);
+      return {
+        output: buildJsdelivrUrl(owner, repo, "releases", ["tag", tag, ...pathSegments]),
+        notice: "",
+      };
     }
     if (releaseKind === "download") {
       if (pathSegments.length === 0) {
         throw new Error("Release download URL must include a file path.");
       }
-      return buildJsdelivrUrl(owner, repo, "releases", ["download", tag, ...pathSegments]);
+      return {
+        output: buildJsdelivrUrl(owner, repo, "releases", ["download", tag, ...pathSegments]),
+        notice:
+          "jsDelivr does not serve GitHub release assets. Use the GitHub release URL instead.",
+      };
     }
     throw new Error("Unsupported release URL. Use /releases/tag or /releases/download.");
   }
@@ -213,6 +225,9 @@ function buildJsdelivrUrl(
         placeholder="https://cdn.jsdelivr.net/gh/owner/repo@branch/path/file.js"
         class="min-h-[220px] w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 font-mono text-sm text-slate-900 shadow-sm focus:outline-none"
       ></textarea>
+      {#if notice}
+        <p class="text-sm font-medium text-amber-600">{notice}</p>
+      {/if}
     </div>
   </div>
 </div>
