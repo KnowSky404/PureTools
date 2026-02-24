@@ -12,21 +12,21 @@ let indent = $state<IndentSize>(2);
 let copyStatus = $state("Copy");
 let highlightOutput = $state(true);
 
-const inputStats = $derived(() => {
+const inputStats = $derived.by(() => {
   if (!input) {
     return { chars: 0, lines: 0 };
   }
   return { chars: input.length, lines: input.split("\n").length };
 });
 
-const outputStats = $derived(() => {
+const outputStats = $derived.by(() => {
   if (!output) {
     return { chars: 0, lines: 0 };
   }
   return { chars: output.length, lines: output.split("\n").length };
 });
 
-const highlightedOutput = $derived(() => {
+const highlightedOutput = $derived.by(() => {
   if (!output || !highlightOutput) {
     return "";
   }
