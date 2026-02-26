@@ -109,3 +109,8 @@ SQL Format
 更新：GitHub CDN 工具提示 jsDelivr 不支持 release assets，建议使用 GitHub 直链。
 更新：GitHub CDN 工具同时输出 Raw 与 jsDelivr 两个链接并分别提供复制按钮。
 更新：Raw 输出不可用时提示使用 GitHub blob 文件链接。
+
+## 20260226
+
+新增：时间戳工具页，支持时间戳与人类可读时间互转、s/ms 格式选择、有效性校验与错误提示，输出本地与 UTC 时间。
+更新：首页新增时间戳工具入口卡片。

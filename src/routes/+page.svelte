@@ -13,6 +13,12 @@ const tools = $state([
     href: "/sql",
   },
   {
+    name: "Timestamp Tool",
+    description: "Validate and convert timestamps",
+    icon: "TS",
+    href: "/timestamp",
+  },
+  {
     name: "GitHub CDN",
     description: "Convert GitHub file links to jsDelivr CDN URLs",
     icon: "CDN",
