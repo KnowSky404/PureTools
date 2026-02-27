@@ -1,42 +1,47 @@
-# sv
+# PureTools
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+PureTools is a lightweight, privacy-first, pure-frontend toolkit for developers. All processing happens locally in the browser with zero backend dependencies.
 
-## Creating a project
+## Tools
 
-If you're seeing this, you've probably already done this step. Congrats!
+- JSON Formatter: format, minify, validate, escape/unescape, syntax highlight, line numbers, copy.
+- SQL Formatter: format/minify, basic validation (strings/parentheses), line numbers, copy.
+- UUID Generator: RFC 4122 v4 generate, validate, history, copy.
+- Timestamp Tool: timestamp <-> local datetime, seconds/milliseconds, local + UTC outputs, copy.
+- GitHub to jsDelivr: convert GitHub/raw links to raw + CDN URLs with helpful notices, copy.
 
-```sh
-# create a new project
-npx sv create my-app
-```
+## Tech Stack
 
-To recreate this project with the same configuration:
+- SvelteKit (Svelte 5 Runes) + Vite
+- TypeScript (strict)
+- Tailwind CSS v4
+- Biome (lint/format)
+- Cloudflare adapter (deployment target)
 
-```sh
-# recreate this project
-npx sv create --template minimal --types ts --add tailwindcss="plugins:none" --no-install .
-```
+## Local Development
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
+1. Install dependencies:
 
 ```sh
-npm run build
+pnpm install
 ```
 
-You can preview the production build with `npm run preview`.
+2. Start the dev server:
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```sh
+pnpm dev
+```
+
+## Scripts
+
+- `pnpm dev`: start dev server
+- `pnpm build`: build for production
+- `pnpm preview`: preview production build
+- `pnpm check`: type-check and sync
+- `pnpm lint`: lint + type-check
+- `pnpm lint:fix`: auto-fix lint issues
+- `pnpm format`: format code
+
+## Notes
+
+- All tools run locally in the browser; no data is sent to any server.
