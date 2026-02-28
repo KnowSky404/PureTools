@@ -104,7 +104,7 @@ const features = [
       <h2 class="text-xl font-bold text-neutral-400">More Tools</h2>
       <p class="mt-2 text-sm leading-relaxed text-neutral-400">Request a tool or contribute on GitHub</p>
       <a 
-        href="https://github.com/PureTools/PureTools/issues" 
+        href="https://github.com/KnowSky404/PureTools/issues" 
         target="_blank"
         class="mt-8 text-sm font-semibold text-neutral-400 hover:text-neutral-600"
       >

@@ -122,3 +122,5 @@ SQL Format
 更新：全局布局优化，添加固定 Header（含搜索占位符与 GitHub 入口）与简洁 Footer。
 更新：所有工具页（UUID、JSON、SQL、Timestamp、GitHub CDN）样式对齐，采用统一的卡片布局、操作栏与状态反馈，大幅提升视觉精致度与易用性。
 配置：`GEMINI.md` 明确规定项目必须使用 `pnpm` 且禁止使用其他包管理器。
+## 20260228
+修正：更新项目 GitHub 仓库链接为正确的 KnowSky404/PureTools。

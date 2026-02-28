@@ -56,7 +56,7 @@ const navItems = [
         </button>
 
         <a
-          href="https://github.com/PureTools/PureTools"
+          href="https://github.com/KnowSky404/PureTools"
           target="_blank"
           rel="noopener noreferrer"
           class="rounded-lg p-2 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
@@ -81,7 +81,7 @@ const navItems = [
         </p>
         <div class="flex items-center gap-6 text-sm text-neutral-500">
           <a href="/" class="hover:text-indigo-600">Home</a>
-          <a href="https://github.com/PureTools/PureTools" target="_blank" class="hover:text-indigo-600">Source</a>
+          <a href="https://github.com/KnowSky404/PureTools" target="_blank" class="hover:text-indigo-600">Source</a>
           <span class="flex items-center gap-1.5">
             <span class="inline-block h-2 w-2 rounded-full bg-green-500"></span>
             Cloudflare Pages
