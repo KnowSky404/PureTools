@@ -1,4 +1,16 @@
 <script lang="ts">
+import {
+  AlertCircle,
+  ArrowRightLeft,
+  Calendar,
+  Check,
+  Clock,
+  Copy,
+  Fingerprint,
+  Globe,
+  Timer,
+  Zap,
+} from "lucide-svelte";
 import { copyToClipboard } from "$lib/utils/clipboard";
 
 type TimestampUnit = "s" | "ms";
@@ -81,7 +93,6 @@ async function handleCopyDatetime() {
   if (datetimeResult.status !== "valid") {
     return;
   }
-
   const success = await copyToClipboard(datetimeResult.timestamp);
   datetimeCopyStatus = success ? "Copied!" : "Copy failed";
   setTimeout(() => (datetimeCopyStatus = "Copy"), 1500);
@@ -111,7 +122,6 @@ function formatDateTime(date: Date, useUtc: boolean): string {
   const hours = useUtc ? date.getUTCHours() : date.getHours();
   const minutes = useUtc ? date.getUTCMinutes() : date.getMinutes();
   const seconds = useUtc ? date.getUTCSeconds() : date.getSeconds();
-
   return `${year}-${pad2(month)}-${pad2(day)} ${pad2(hours)}:${pad2(minutes)}:${pad2(seconds)}`;
 }
 
@@ -126,7 +136,6 @@ function parseHumanDateTime(raw: string): ParsedDateTime {
   if (!value) {
     return {};
   }
-
   if (/(Z|[+-]\d{2}:?\d{2})$/i.test(value)) {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) {
@@ -134,35 +143,31 @@ function parseHumanDateTime(raw: string): ParsedDateTime {
     }
     return { date };
   }
-
   const match = value.match(/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2})(?::(\d{2}))?)?$/);
   if (!match) {
     return { error: "Use YYYY-MM-DD HH:mm:ss or ISO 8601." };
   }
-
   const year = Number.parseInt(match[1], 10);
   const month = Number.parseInt(match[2], 10);
   const day = Number.parseInt(match[3], 10);
   const hour = match[4] ? Number.parseInt(match[4], 10) : 0;
   const minute = match[5] ? Number.parseInt(match[5], 10) : 0;
   const second = match[6] ? Number.parseInt(match[6], 10) : 0;
-
   if (!isInRange(month, 1, 12)) {
-    return { error: "Month must be between 01 and 12." };
+    return { error: "Month 01-12." };
   }
   if (!isInRange(day, 1, 31)) {
-    return { error: "Day must be between 01 and 31." };
+    return { error: "Day 01-31." };
   }
   if (!isInRange(hour, 0, 23)) {
-    return { error: "Hour must be between 00 and 23." };
+    return { error: "Hour 00-23." };
   }
   if (!isInRange(minute, 0, 59)) {
-    return { error: "Minute must be between 00 and 59." };
+    return { error: "Minute 00-59." };
   }
   if (!isInRange(second, 0, 59)) {
-    return { error: "Second must be between 00 and 59." };
+    return { error: "Second 00-59." };
   }
-
   const date = new Date(year, month - 1, day, hour, minute, second);
   if (
     date.getFullYear() !== year ||
@@ -174,7 +179,6 @@ function parseHumanDateTime(raw: string): ParsedDateTime {
   ) {
     return { error: "Invalid date/time." };
   }
-
   return { date };
 }
 
@@ -183,147 +187,175 @@ function isInRange(value: number, min: number, max: number): boolean {
 }
 </script>
 
-<div class="mx-auto max-w-5xl p-6">
-  <div class="mb-8 flex items-center justify-between">
-    <div>
-      <h1 class="text-3xl font-bold text-slate-900">Timestamp Tool</h1>
-      <p class="text-slate-500">Validate and convert timestamps locally in your browser.</p>
+<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+  <!-- Header Section -->
+  <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex items-center gap-4">
+      <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 ring-1 ring-orange-100">
+        <Clock size={24} />
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight text-neutral-900">Timestamp Tool</h1>
+        <p class="text-sm text-neutral-500 font-medium">Validate and convert timestamps instantly</p>
+      </div>
     </div>
-    <a href="/" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">← Back to Tools</a>
   </div>
 
   <div class="grid gap-8 lg:grid-cols-2">
-    <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div class="mb-4">
-        <h2 class="text-lg font-semibold text-slate-900">Timestamp → Date</h2>
-        <p class="text-sm text-slate-500">Convert seconds or milliseconds to human-readable time.</p>
+    <!-- Timestamp to Date -->
+    <section class="flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+      <div class="border-b border-neutral-100 bg-neutral-50/50 px-6 py-4">
+        <h2 class="flex items-center gap-2 text-sm font-bold text-neutral-900 uppercase tracking-wider">
+          <ArrowRightLeft size={14} class="text-orange-600" />
+          Timestamp to Date
+        </h2>
       </div>
-
-      <div class="space-y-4">
-        <div class="space-y-2">
-          <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Timestamp</label>
-          <div class="flex flex-wrap gap-2">
-            <input
-              type="text"
-              bind:value={timestampInput}
-              placeholder="1700000000 or 1700000000000"
-              class="min-w-[220px] flex-1 rounded-lg border border-slate-200 px-3 py-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+      
+      <div class="flex-1 p-6 space-y-6">
+        <div class="space-y-3">
+          <label for="ts-input" class="text-xs font-bold uppercase tracking-wider text-neutral-400">Timestamp Value</label>
+          <div class="flex gap-2">
+            <div class="relative flex-1">
+              <input
+                id="ts-input"
+                type="text"
+                bind:value={timestampInput}
+                placeholder="e.g. 1700000000000"
+                class="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 font-mono text-sm text-neutral-900 placeholder:text-neutral-300 outline-none transition-all focus:border-orange-500/50 focus:bg-white focus:ring-4 focus:ring-orange-500/5"
+              />
+            </div>
             <select
               bind:value={timestampUnit}
-              class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              class="rounded-xl border border-neutral-200 bg-white px-3 py-3 text-xs font-bold text-neutral-700 outline-none transition-all hover:border-neutral-300 focus:ring-2 focus:ring-orange-500/10"
             >
               <option value="s">Seconds (s)</option>
-              <option value="ms">Milliseconds (ms)</option>
+              <option value="ms">Millis (ms)</option>
             </select>
           </div>
         </div>
 
-        <div class="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onclick={handleNowTimestamp}
-            class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100"
-          >
-            Use Now
-          </button>
-        </div>
+        <button
+          onclick={handleNowTimestamp}
+          class="flex items-center gap-2 rounded-xl bg-neutral-100 px-4 py-2.5 text-xs font-bold text-neutral-700 transition-all hover:bg-neutral-200 active:scale-95"
+        >
+          <Zap size={14} class="text-orange-600 fill-orange-600" />
+          Get Current Timestamp
+        </button>
 
-        {#if timestampResult.status === "invalid"}
-          <p class="text-sm font-medium text-red-600">{timestampResult.message}</p>
-        {:else if timestampResult.status === "valid"}
-          <p class="text-sm font-medium text-emerald-600">Valid timestamp</p>
-        {:else}
-          <p class="text-sm text-slate-400">Enter a timestamp to validate and convert.</p>
-        {/if}
-
-        <div class="rounded-lg border border-slate-200 bg-slate-50 p-4">
-          {#if timestampResult.status === "valid"}
-            <div class="space-y-3">
-              <div>
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Local Time</p>
-                <p class="mt-1 font-mono text-sm text-slate-900">{timestampResult.local}</p>
+        <div class="space-y-4">
+          <div class="rounded-xl border border-neutral-100 bg-neutral-50/50 p-5 space-y-4">
+            {#if timestampResult.status === "valid"}
+              <div class="grid gap-4 sm:grid-cols-2">
+                <div class="space-y-1.5">
+                  <span class="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-neutral-400">
+                    <Timer size={10} /> Local Time
+                  </span>
+                  <p class="font-mono text-sm font-semibold text-neutral-900">{timestampResult.local}</p>
+                </div>
+                <div class="space-y-1.5">
+                  <span class="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-neutral-400">
+                    <Globe size={10} /> UTC
+                  </span>
+                  <p class="font-mono text-sm font-semibold text-neutral-900">{timestampResult.utc}</p>
+                </div>
               </div>
-              <div>
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">UTC</p>
-                <p class="mt-1 font-mono text-sm text-slate-900">{timestampResult.utc}</p>
+            {:else if timestampResult.status === "invalid"}
+              <div class="flex items-center gap-2 text-red-600">
+                <AlertCircle size={16} />
+                <span class="text-xs font-bold">{timestampResult.message}</span>
               </div>
-            </div>
-          {:else}
-            <p class="font-mono text-sm text-slate-400">—</p>
-          {/if}
+            {:else}
+              <div class="flex flex-col items-center justify-center py-4 text-neutral-300">
+                <ArrowRightLeft size={24} class="mb-2 opacity-20" />
+                <p class="text-[10px] font-bold uppercase tracking-widest">Awaiting Input</p>
+              </div>
+            {/if}
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div class="mb-4">
-        <h2 class="text-lg font-semibold text-slate-900">Date → Timestamp</h2>
-        <p class="text-sm text-slate-500">
-          Parse a local time string and convert it to a timestamp.
-        </p>
+    <!-- Date to Timestamp -->
+    <section class="flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+      <div class="border-b border-neutral-100 bg-neutral-50/50 px-6 py-4">
+        <h2 class="flex items-center gap-2 text-sm font-bold text-neutral-900 uppercase tracking-wider">
+          <Calendar size={14} class="text-orange-600" />
+          Date to Timestamp
+        </h2>
       </div>
-
-      <div class="space-y-4">
-        <div class="space-y-2">
-          <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Local Time</label>
-          <div class="flex flex-wrap gap-2">
-            <input
-              type="text"
-              bind:value={datetimeInput}
-              placeholder="2026-02-26 14:30:00"
-              class="min-w-[220px] flex-1 rounded-lg border border-slate-200 px-3 py-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+      
+      <div class="flex-1 p-6 space-y-6">
+        <div class="space-y-3">
+          <label for="dt-input" class="text-xs font-bold uppercase tracking-wider text-neutral-400">Human Readable Date</label>
+          <div class="flex gap-2">
+            <div class="relative flex-1">
+              <input
+                id="dt-input"
+                type="text"
+                bind:value={datetimeInput}
+                placeholder="YYYY-MM-DD HH:mm:ss"
+                class="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 font-mono text-sm text-neutral-900 placeholder:text-neutral-300 outline-none transition-all focus:border-orange-500/50 focus:bg-white focus:ring-4 focus:ring-orange-500/5"
+              />
+            </div>
             <select
               bind:value={datetimeUnit}
-              class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              class="rounded-xl border border-neutral-200 bg-white px-3 py-3 text-xs font-bold text-neutral-700 outline-none transition-all hover:border-neutral-300 focus:ring-2 focus:ring-orange-500/10"
             >
               <option value="s">Seconds (s)</option>
-              <option value="ms">Milliseconds (ms)</option>
+              <option value="ms">Millis (ms)</option>
             </select>
           </div>
         </div>
 
-        <div class="flex flex-wrap gap-2">
+        <div class="flex items-center gap-2">
           <button
-            type="button"
             onclick={handleNowDatetime}
-            class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100"
+            class="flex items-center gap-2 rounded-xl bg-neutral-100 px-4 py-2.5 text-xs font-bold text-neutral-700 transition-all hover:bg-neutral-200 active:scale-95"
           >
-            Use Now
+            <Clock size={14} class="text-orange-600" />
+            Use Current Time
           </button>
+          
           {#if datetimeResult.status === "valid"}
             <button
-              type="button"
               onclick={handleCopyDatetime}
-              class="rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:bg-indigo-700"
+              class="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-all hover:bg-indigo-700 active:scale-95"
             >
+              {#if datetimeCopyStatus === "Copied!"}
+                <Check size={14} />
+              {:else}
+                <Copy size={14} />
+              {/if}
               {datetimeCopyStatus}
             </button>
           {/if}
         </div>
 
-        {#if datetimeResult.status === "invalid"}
-          <p class="text-sm font-medium text-red-600">{datetimeResult.message}</p>
-        {:else if datetimeResult.status === "valid"}
-          <p class="text-sm font-medium text-emerald-600">Valid date/time</p>
-        {:else}
-          <p class="text-sm text-slate-400">Use format: YYYY-MM-DD HH:mm:ss</p>
-        {/if}
-
-        <div class="rounded-lg border border-slate-200 bg-slate-50 p-4">
-          {#if datetimeResult.status === "valid"}
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Timestamp</p>
-              <p class="mt-1 font-mono text-sm text-slate-900">{datetimeResult.timestamp}</p>
-            </div>
-          {:else}
-            <p class="font-mono text-sm text-slate-400">—</p>
-          {/if}
+        <div class="space-y-4">
+          <div class="rounded-xl border border-neutral-100 bg-neutral-50/50 p-5 space-y-4">
+            {#if datetimeResult.status === "valid"}
+              <div class="space-y-1.5">
+                <span class="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-neutral-400">
+                  <Fingerprint size={10} /> Generated Timestamp ({datetimeUnit})
+                </span>
+                <p class="font-mono text-lg font-bold text-indigo-600 tracking-tight">{datetimeResult.timestamp}</p>
+              </div>
+            {:else if datetimeResult.status === "invalid"}
+              <div class="flex items-center gap-2 text-red-600">
+                <AlertCircle size={16} />
+                <span class="text-xs font-bold">{datetimeResult.message}</span>
+              </div>
+            {:else}
+              <div class="flex flex-col items-center justify-center py-4 text-neutral-300">
+                <Calendar size={24} class="mb-2 opacity-20" />
+                <p class="text-[10px] font-bold uppercase tracking-widest">Awaiting Input</p>
+              </div>
+            {/if}
+          </div>
         </div>
-
-        <p class="text-xs text-slate-400">
-          Tip: Supports local time like "2026-02-26 14:30:00" or ISO 8601 with timezone.
+        
+        <p class="text-[10px] leading-relaxed text-neutral-400 font-medium italic">
+          Tip: Supports YYYY-MM-DD HH:mm:ss, ISO 8601, and shorthand dates. Everything stays local.
         </p>
       </div>
     </section>

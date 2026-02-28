@@ -16,7 +16,7 @@ PureTools 是一个极轻量、纯前端的在线工具集网站。其核心目�
 
 * **核心框架**：Svelte 5 (强制使用 Runes 语法：`$state`, `$derived`, `$effect`, `$props`)。
 * **语言**：TypeScript (严格模式，所有组件和函数必须有明确的类型定义)。
-* **构建工具**：Vite。
+* **构建工具与包管理器**：Vite / pnpm (禁止使用 npm 或 yarn)。
 * **样式引擎**：Tailwind CSS (v4)，优先使用 Utility classes 组合，避免写自定义 CSS 文件。
 * **UI 组件**：优先手写基于 Tailwind 的简单 HTML 结构；如需复杂组件，假设我们使用的是 `shadcn-svelte` 范式。
 * **代码规范**：项目使用 Biome 进行 Lint 和 Format。输出的代码必须符合 Biome 的默认规范（如使用双引号、末尾逗号等），保持代码整洁。

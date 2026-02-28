@@ -1,4 +1,14 @@
 <script lang="ts">
+import {
+  AlertCircle,
+  Check,
+  Copy,
+  Database,
+  FileCode,
+  Maximize2,
+  Minimize2,
+  Trash2,
+} from "lucide-svelte";
 import { copyToClipboard } from "$lib/utils/clipboard";
 
 type FormatMode = "format" | "minify";
@@ -229,7 +239,6 @@ function uppercaseKeywords(value: string): string {
     "EXISTS",
     "BETWEEN",
   ];
-
   return keywords.reduce((acc, keyword) => {
     const pattern = keyword.split(" ").join("\\s+");
     const regex = new RegExp(`\\b${pattern}\\b`, "gi");
@@ -262,7 +271,6 @@ function insertClauseBreaks(value: string): string {
     "UNION ALL",
     "UNION",
   ];
-
   return clauses.reduce((acc, clause) => {
     const pattern = clause.split(" ").join("\\s+");
     const regex = new RegExp(`\\b${pattern}\\b`, "g");
@@ -313,87 +321,109 @@ function breakTopLevelCommas(value: string, indentSpace: string): string {
         continue;
       }
     }
-
     result += char;
   }
-
   return result;
 }
 </script>
 
-<div class="mx-auto max-w-5xl p-6">
-  <div class="mb-8 flex items-center justify-between">
-    <div>
-      <h1 class="text-3xl font-bold text-slate-900">SQL Formatter</h1>
-      <p class="text-slate-500">Format and minify SQL in your browser.</p>
+<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+  <!-- Header Section -->
+  <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex items-center gap-4">
+      <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100">
+        <Database size={24} />
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight text-neutral-900">SQL Formatter</h1>
+        <p class="text-sm text-neutral-500 font-medium">Beautify and optimize your SQL queries</p>
+      </div>
     </div>
-    <a href="/" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
-      ← Back to Tools
-    </a>
   </div>
 
-  <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-    <div class="flex flex-wrap items-center gap-2">
-      <button
-        type="button"
-        onclick={() => (mode = "format")}
-        class="rounded-lg px-3 py-2 text-xs font-semibold transition-colors
-        {mode === 'format' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
-      >
-        Format
-      </button>
-      <button
-        type="button"
-        onclick={() => (mode = "minify")}
-        class="rounded-lg px-3 py-2 text-xs font-semibold transition-colors
-        {mode === 'minify' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
-      >
-        Minify
-      </button>
+  <!-- Toolbar -->
+  <div class="mb-6 rounded-2xl border border-neutral-200 bg-white p-2 shadow-sm">
+    <div class="flex flex-wrap items-center gap-1.5">
+      <div class="flex items-center rounded-xl bg-neutral-100 p-1">
+        <button
+          onclick={() => (mode = "format")}
+          class="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all
+          {mode === 'format' ? 'bg-white text-indigo-600 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'}"
+        >
+          <Maximize2 size={14} />
+          Format
+        </button>
+        <button
+          onclick={() => (mode = "minify")}
+          class="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all
+          {mode === 'minify' ? 'bg-white text-indigo-600 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'}"
+        >
+          <Minimize2 size={14} />
+          Minify
+        </button>
+      </div>
+
+      <div class="h-6 w-px bg-neutral-200 mx-1"></div>
+
       <select
         value={indent}
         onchange={handleIndentChange}
-        class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700"
+        class="rounded-xl border border-neutral-200 bg-white px-3 py-1.5 text-xs font-bold text-neutral-700 outline-none hover:border-neutral-300 focus:ring-2 focus:ring-indigo-500/10 disabled:opacity-50"
         disabled={mode === "minify"}
       >
-        <option value={2}>2 spaces</option>
-        <option value={4}>4 spaces</option>
+        <option value={2}>2 Spaces</option>
+        <option value={4}>4 Spaces</option>
       </select>
+
+      <div class="h-6 w-px bg-neutral-200 mx-1 hidden sm:block"></div>
+
+      <div class="flex items-center gap-1.5">
+        <button
+          onclick={handleExample}
+          class="flex items-center gap-1.5 rounded-xl border border-neutral-200 bg-white px-3 py-1.5 text-xs font-bold text-neutral-700 transition-all hover:bg-neutral-50"
+        >
+          <FileCode size={14} />
+          Example
+        </button>
+        <button
+          onclick={handleClear}
+          class="flex items-center gap-1.5 rounded-xl border border-neutral-200 bg-white px-3 py-1.5 text-xs font-bold text-neutral-700 transition-all hover:bg-neutral-50 hover:text-red-600"
+        >
+          <Trash2 size={14} />
+          Clear
+        </button>
+      </div>
+
       <button
-        type="button"
-        onclick={handleExample}
-        class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
-      >
-        Use Example
-      </button>
-      <button
-        type="button"
-        onclick={handleClear}
-        class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
-      >
-        Clear
-      </button>
-      <button
-        type="button"
         onclick={handleCopy}
-        class="ml-auto rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:bg-indigo-700"
         disabled={!output}
+        class="ml-auto flex items-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-1.5 text-xs font-bold text-white shadow-sm transition-all hover:bg-indigo-700 disabled:opacity-50"
       >
+        {#if copyStatus === "Copied!"}
+          <Check size={14} />
+        {:else}
+          <Copy size={14} />
+        {/if}
         {copyStatus}
       </button>
     </div>
   </div>
 
-  <div class="mt-6 grid gap-6 lg:grid-cols-2">
-    <div class="flex flex-col gap-3">
-      <div class="flex items-center justify-between text-xs text-slate-500">
-        <span>Input</span>
+  <!-- Editor Section -->
+  <div class="grid gap-6 lg:grid-cols-2 lg:h-[calc(100vh-320px)] min-h-[500px]">
+    <!-- Input Panel -->
+    <div class="flex flex-col gap-2 h-full">
+      <div class="flex items-center justify-between px-2 text-[11px] font-bold uppercase tracking-wider text-neutral-400">
+        <span class="flex items-center gap-1.5">
+          <span class="h-1.5 w-1.5 rounded-full {error ? 'bg-red-500' : input.trim() ? 'bg-green-500' : 'bg-neutral-300'}"></span>
+          Input SQL
+        </span>
         <span>{inputStats.lines} lines · {inputStats.chars} chars</span>
       </div>
-      <div class="flex min-h-[320px] w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <div class="w-12 border-r border-slate-200 bg-slate-50 text-slate-400">
+      <div class="flex flex-1 overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition-all focus-within:ring-4 focus-within:ring-indigo-500/5 focus-within:border-indigo-500/50">
+        <div class="w-12 shrink-0 border-r border-neutral-100 bg-neutral-50/50 text-neutral-400 select-none">
           <div
-            class="h-full overflow-hidden px-2 py-3 font-mono text-xs leading-6"
+            class="h-full overflow-hidden px-2 py-4 font-mono text-[11px] leading-6 text-right"
             bind:this={inputLinesWrap}
           >
             <pre class="whitespace-pre">{inputLineNumbers}</pre>
@@ -404,39 +434,46 @@ function breakTopLevelCommas(value: string, indentSpace: string): string {
           bind:value={input}
           placeholder="Paste SQL here..."
           onscroll={syncInputScroll}
-          class="min-h-[320px] flex-1 resize-none px-4 py-3 font-mono text-sm leading-6 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          class="flex-1 resize-none bg-transparent px-4 py-4 font-mono text-sm leading-6 text-neutral-900 outline-none placeholder:text-neutral-300"
         ></textarea>
       </div>
       {#if error}
-        <p class="text-sm font-medium text-red-600">{error}</p>
-      {:else if input.trim()}
-        <p class="text-sm font-medium text-green-600">Basic validation passed</p>
+        <div class="flex items-center gap-2 rounded-xl bg-red-50 px-4 py-2.5 text-xs font-bold text-red-700 ring-1 ring-red-100">
+          <AlertCircle size={14} />
+          {error}
+        </div>
       {/if}
     </div>
 
-    <div class="flex flex-col gap-3">
-      <div class="flex items-center justify-between text-xs text-slate-500">
+    <!-- Output Panel -->
+    <div class="flex flex-col gap-2 h-full">
+      <div class="flex items-center justify-between px-2 text-[11px] font-bold uppercase tracking-wider text-neutral-400">
         <span>Output</span>
         <span>{outputStats.lines} lines · {outputStats.chars} chars</span>
       </div>
-      <div class="flex min-h-[320px] w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm">
-        <div class="w-12 border-r border-slate-200 bg-slate-100 text-slate-400">
+      <div class="flex flex-1 overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50/50 shadow-sm">
+        <div class="w-12 shrink-0 border-r border-neutral-100 bg-neutral-100/50 text-neutral-400 select-none">
           <div
-            class="h-full overflow-hidden px-2 py-3 font-mono text-xs leading-6"
+            class="h-full overflow-hidden px-2 py-4 font-mono text-[11px] leading-6 text-right"
             bind:this={outputLinesWrap}
           >
             <pre class="whitespace-pre">{outputLineNumbers}</pre>
           </div>
         </div>
         <div
-          class="flex-1 overflow-auto px-4 py-3 font-mono text-sm leading-6 text-slate-900"
+          class="flex-1 overflow-auto px-4 py-4 font-mono text-sm leading-6 text-neutral-900"
           bind:this={outputScrollEl}
           onscroll={syncOutputScroll}
         >
           {#if output}
-            <pre class="whitespace-pre-wrap break-words">{output}</pre>
+            <pre class="whitespace-pre-wrap break-all">{output}</pre>
           {:else}
-            <p class="text-slate-400">Formatted SQL will appear here...</p>
+            <div class="flex h-full items-center justify-center text-neutral-300">
+              <div class="flex flex-col items-center gap-2">
+                <FileCode size={32} class="opacity-20" />
+                <p class="text-xs font-bold">Output will appear here</p>
+              </div>
+            </div>
           {/if}
         </div>
       </div>

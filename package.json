@@ -33,5 +33,8 @@
     "*.{js,ts,svelte,json}": [
       "biome check --write --no-errors-on-unmatched"
     ]
+  },
+  "dependencies": {
+    "lucide-svelte": "^0.575.0"
   }
 }
