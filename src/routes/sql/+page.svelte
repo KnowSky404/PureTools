@@ -410,17 +410,17 @@ function breakTopLevelCommas(value: string, indentSpace: string): string {
   </div>
 
   <!-- Editor Section -->
-  <div class="grid gap-6 lg:grid-cols-2 lg:h-[calc(100vh-320px)] min-h-[500px]">
+  <div class="grid gap-6 lg:grid-cols-2 lg:h-[calc(100vh-300px)] lg:min-h-0 min-h-[600px]">
     <!-- Input Panel -->
-    <div class="flex flex-col gap-2 h-full">
-      <div class="flex items-center justify-between px-2 text-[11px] font-bold uppercase tracking-wider text-neutral-400">
+    <div class="flex flex-col gap-2 h-full min-h-0">
+      <div class="flex items-center justify-between px-2 text-[11px] font-bold uppercase tracking-wider text-neutral-400 shrink-0">
         <span class="flex items-center gap-1.5">
           <span class="h-1.5 w-1.5 rounded-full {error ? 'bg-red-500' : input.trim() ? 'bg-green-500' : 'bg-neutral-300'}"></span>
           Input SQL
         </span>
         <span>{inputStats.lines} lines · {inputStats.chars} chars</span>
       </div>
-      <div class="flex flex-1 overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition-all focus-within:ring-4 focus-within:ring-indigo-500/5 focus-within:border-indigo-500/50">
+      <div class="flex flex-1 min-h-0 overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition-all focus-within:ring-4 focus-within:ring-indigo-500/5 focus-within:border-indigo-500/50">
         <div class="w-12 shrink-0 border-r border-neutral-100 bg-neutral-50/50 text-neutral-400 select-none">
           <div
             class="h-full overflow-hidden px-2 py-4 font-mono text-[11px] leading-6 text-right"
@@ -434,11 +434,11 @@ function breakTopLevelCommas(value: string, indentSpace: string): string {
           bind:value={input}
           placeholder="Paste SQL here..."
           onscroll={syncInputScroll}
-          class="flex-1 resize-none bg-transparent px-4 py-4 font-mono text-sm leading-6 text-neutral-900 outline-none placeholder:text-neutral-300"
+          class="flex-1 min-h-0 resize-none bg-transparent px-4 py-4 font-mono text-sm leading-6 text-neutral-900 outline-none placeholder:text-neutral-300"
         ></textarea>
       </div>
       {#if error}
-        <div class="flex items-center gap-2 rounded-xl bg-red-50 px-4 py-2.5 text-xs font-bold text-red-700 ring-1 ring-red-100">
+        <div class="flex items-center gap-2 rounded-xl bg-red-50 px-4 py-2.5 text-xs font-bold text-red-700 ring-1 ring-red-100 shrink-0">
           <AlertCircle size={14} />
           {error}
         </div>
@@ -446,12 +446,12 @@ function breakTopLevelCommas(value: string, indentSpace: string): string {
     </div>
 
     <!-- Output Panel -->
-    <div class="flex flex-col gap-2 h-full">
-      <div class="flex items-center justify-between px-2 text-[11px] font-bold uppercase tracking-wider text-neutral-400">
+    <div class="flex flex-col gap-2 h-full min-h-0">
+      <div class="flex items-center justify-between px-2 text-[11px] font-bold uppercase tracking-wider text-neutral-400 shrink-0">
         <span>Output</span>
         <span>{outputStats.lines} lines · {outputStats.chars} chars</span>
       </div>
-      <div class="flex flex-1 overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50/50 shadow-sm">
+      <div class="flex flex-1 min-h-0 overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50/50 shadow-sm">
         <div class="w-12 shrink-0 border-r border-neutral-100 bg-neutral-100/50 text-neutral-400 select-none">
           <div
             class="h-full overflow-hidden px-2 py-4 font-mono text-[11px] leading-6 text-right"
@@ -461,12 +461,12 @@ function breakTopLevelCommas(value: string, indentSpace: string): string {
           </div>
         </div>
         <div
-          class="flex-1 overflow-auto px-4 py-4 font-mono text-sm leading-6 text-neutral-900"
+          class="flex-1 min-h-0 overflow-auto px-4 py-4 font-mono text-sm leading-6 text-neutral-900"
           bind:this={outputScrollEl}
           onscroll={syncOutputScroll}
         >
           {#if output}
-            <pre class="whitespace-pre-wrap break-all">{output}</pre>
+            <pre class="whitespace-pre break-all">{output}</pre>
           {:else}
             <div class="flex h-full items-center justify-center text-neutral-300">
               <div class="flex flex-col items-center gap-2">
