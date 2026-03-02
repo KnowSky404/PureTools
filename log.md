@@ -131,3 +131,5 @@ SQL Format
 更新：新增 `cf:dev` 与 `cf:deploy` 脚本，统一 Wrangler 在 Bun 环境下的本地调试与部署入口。
 更新：README 本地开发与脚本文档全面切换为 Bun 命令。
 配置：`GEMINI.md` 包管理器约束更新为 Bun，避免后续协作指令冲突。
+更新：`AGENTS.md` 与 `GEMINI.md` 新增技术架构说明，明确路由分层、逻辑分层、构建部署链路与环境变量约束。
+修正：`AGENTS.md` 技术栈约束同步为 Vite / Bun，和当前项目包管理器保持一致。
