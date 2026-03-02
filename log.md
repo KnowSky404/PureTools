@@ -124,3 +124,10 @@ SQL Format
 配置：`GEMINI.md` 明确规定项目必须使用 `pnpm` 且禁止使用其他包管理器。
 ## 20260228
 修正：更新项目 GitHub 仓库链接为正确的 KnowSky404/PureTools。
+
+## 20260302
+
+更新：项目包管理器从 pnpm 迁移到 Bun，`package.json` 脚本链路改为 `bun run` 调用。
+更新：新增 `cf:dev` 与 `cf:deploy` 脚本，统一 Wrangler 在 Bun 环境下的本地调试与部署入口。
+更新：README 本地开发与脚本文档全面切换为 Bun 命令。
+配置：`GEMINI.md` 包管理器约束更新为 Bun，避免后续协作指令冲突。

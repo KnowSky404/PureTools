@@ -23,24 +23,26 @@ PureTools is a lightweight, privacy-first, pure-frontend toolkit for developers.
 1. Install dependencies:
 
 ```sh
-pnpm install
+bun install
 ```
 
 2. Start the dev server:
 
 ```sh
-pnpm dev
+bun run dev
 ```
 
 ## Scripts
 
-- `pnpm dev`: start dev server
-- `pnpm build`: build for production
-- `pnpm preview`: preview production build
-- `pnpm check`: type-check and sync
-- `pnpm lint`: lint + type-check
-- `pnpm lint:fix`: auto-fix lint issues
-- `pnpm format`: format code
+- `bun run dev`: start dev server
+- `bun run build`: build for production
+- `bun run preview`: preview production build
+- `bun run check`: type-check and sync
+- `bun run lint`: lint + type-check
+- `bun run lint:fix`: auto-fix lint issues
+- `bun run format`: format code
+- `bun run cf:dev`: run Wrangler local dev
+- `bun run cf:deploy`: deploy to Cloudflare Workers
 
 ## Notes
 
