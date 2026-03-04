@@ -133,3 +133,8 @@ SQL Format
 配置：`GEMINI.md` 包管理器约束更新为 Bun，避免后续协作指令冲突。
 更新：`AGENTS.md` 与 `GEMINI.md` 新增技术架构说明，明确路由分层、逻辑分层、构建部署链路与环境变量约束。
 修正：`AGENTS.md` 技术栈约束同步为 Vite / Bun，和当前项目包管理器保持一致。
+
+## 20260304
+
+修正：`pre-commit` 钩子从 `pnpm lint-staged` 切换为 `bunx lint-staged`，避免无 pnpm 环境提交失败。
+配置：`package.json` 新增 `"packageManager": "bun@1.3.10"`，明确项目统一使用 Bun。
