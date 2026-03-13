@@ -580,7 +580,7 @@ function escapeRegexLiteral(value: string): string {
               {#if validationResult.highlightSkipped}
                 <span class="text-neutral-400">Enable shorter input to preview highlights.</span>
               {:else}
-                <div class="whitespace-pre-wrap" {@html validationResult.highlightedHtml}></div>
+                <div class="whitespace-pre-wrap">{@html validationResult.highlightedHtml}</div>
               {/if}
             {:else}
               <span class="text-neutral-400">Matches will be highlighted here.</span>
