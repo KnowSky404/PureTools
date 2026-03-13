@@ -19,6 +19,21 @@ $effect(() => {
 });
 
 $effect(() => {
+  const handleGlobalSearch = (event: KeyboardEvent) => {
+    if (event.key !== "/" || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) {
+      return;
+    }
+    if (isTypingTarget(event.target)) {
+      return;
+    }
+    event.preventDefault();
+    openToolsWithSearch();
+  };
+  document.addEventListener("keydown", handleGlobalSearch);
+  return () => document.removeEventListener("keydown", handleGlobalSearch);
+});
+
+$effect(() => {
   if (!toolsOpen) {
     return;
   }
@@ -90,6 +105,17 @@ function matchesQuery(tool: Tool, query: string): boolean {
     .join(" ")
     .toLowerCase();
   return haystack.includes(query);
+}
+
+function isTypingTarget(target: EventTarget | null): boolean {
+  if (!target || !(target instanceof HTMLElement)) {
+    return false;
+  }
+  const tag = target.tagName.toLowerCase();
+  if (tag === "input" || tag === "textarea" || tag === "select") {
+    return true;
+  }
+  return target.isContentEditable;
 }
 </script>
 
