@@ -9,6 +9,7 @@ import {
   Globe,
   Link2,
   ShieldCheck,
+  Timer,
   Zap,
 } from "lucide-svelte";
 
@@ -36,6 +37,14 @@ const tools = [
     href: "/regex",
     color: "bg-rose-50 text-rose-600 border-rose-100",
     hoverColor: "group-hover:bg-rose-600 group-hover:text-white",
+  },
+  {
+    name: "CRON Tool",
+    description: "Generate and validate CRON schedules",
+    icon: Timer,
+    href: "/cron",
+    color: "bg-cyan-50 text-cyan-600 border-cyan-100",
+    hoverColor: "group-hover:bg-cyan-600 group-hover:text-white",
   },
   {
     name: "SQL Formatter",
