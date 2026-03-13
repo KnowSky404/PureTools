@@ -1,6 +1,6 @@
 <script lang="ts">
 import "./layout.css";
-import { ChevronDown, Github, Search, X } from "lucide-svelte";
+import { ChevronDown, Github, MoonStar, Search, Sun, SunMoon, X } from "lucide-svelte";
 import { page } from "$app/state";
 import favicon from "$lib/assets/favicon.svg";
 import { type Tool, toolCategories, tools } from "$lib/utils/tools";
@@ -11,10 +11,54 @@ let toolsOpen = $state(false);
 let toolQuery = $state("");
 let toolsMenu = $state<HTMLDivElement | null>(null);
 let searchInput = $state<HTMLInputElement | null>(null);
+let themeMode = $state<"system" | "light" | "dark">("system");
+let prefersDark = $state(false);
+let themeInitialized = $state(false);
 
 $effect(() => {
   if (!toolsOpen) {
     toolQuery = "";
+  }
+});
+
+$effect(() => {
+  if (typeof window === "undefined" || themeInitialized) {
+    return;
+  }
+  const stored = window.localStorage.getItem("theme");
+  if (stored === "light" || stored === "dark") {
+    themeMode = stored;
+  }
+  themeInitialized = true;
+});
+
+$effect(() => {
+  if (typeof window === "undefined") {
+    return;
+  }
+  const media = window.matchMedia("(prefers-color-scheme: dark)");
+  const update = () => {
+    prefersDark = media.matches;
+  };
+  update();
+  media.addEventListener("change", update);
+  return () => media.removeEventListener("change", update);
+});
+
+$effect(() => {
+  if (typeof document === "undefined") {
+    return;
+  }
+  const useDark = themeMode === "dark" || (themeMode === "system" && prefersDark);
+  const root = document.documentElement;
+  root.classList.toggle("dark", useDark);
+  root.style.colorScheme = useDark ? "dark" : "light";
+  if (typeof window !== "undefined") {
+    if (themeMode === "system") {
+      window.localStorage.removeItem("theme");
+    } else {
+      window.localStorage.setItem("theme", themeMode);
+    }
   }
 });
 
@@ -100,6 +144,17 @@ function clearSearch(): void {
   searchInput?.focus();
 }
 
+function cycleTheme(): void {
+  themeMode = themeMode === "system" ? "light" : themeMode === "light" ? "dark" : "system";
+}
+
+function getThemeLabel(): string {
+  if (themeMode === "system") {
+    return "System";
+  }
+  return themeMode === "dark" ? "Dark" : "Light";
+}
+
 function matchesQuery(tool: Tool, query: string): boolean {
   const haystack = [tool.name, tool.description, tool.category, tool.href, ...tool.keywords]
     .join(" ")
@@ -124,9 +179,9 @@ function isTypingTarget(target: EventTarget | null): boolean {
   <title>PureTools | Lightweight Developer Toolset</title>
 </svelte:head>
 
-<div class="flex min-h-screen flex-col bg-neutral-50 selection:bg-indigo-100 selection:text-indigo-900">
+<div class="flex min-h-screen flex-col bg-neutral-50 selection:bg-indigo-100 selection:text-indigo-900 dark:bg-neutral-950 dark:selection:bg-indigo-500/30 dark:selection:text-indigo-200">
   <!-- Header -->
-  <header class="sticky top-0 z-50 border-b border-neutral-200 bg-white/80 backdrop-blur-md">
+  <header class="sticky top-0 z-50 border-b border-neutral-200 bg-white/80 backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-950/80">
     <div class="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
       <div class="flex items-center gap-4">
         <a href="/" class="flex items-center gap-2 group">
@@ -217,11 +272,24 @@ function isTypingTarget(target: EventTarget | null): boolean {
       </div>
 
       <div class="flex items-center gap-4">
+        <button
+          onclick={cycleTheme}
+          class="rounded-lg border border-neutral-200 bg-white p-2 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+          title={`Theme: ${getThemeLabel()} (click to switch)`}
+        >
+          {#if themeMode === "system"}
+            <SunMoon size={18} />
+          {:else if themeMode === "dark"}
+            <MoonStar size={18} />
+          {:else}
+            <Sun size={18} />
+          {/if}
+        </button>
         <a
           href="https://github.com/KnowSky404/PureTools"
           target="_blank"
           rel="noopener noreferrer"
-          class="rounded-lg p-2 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
+          class="rounded-lg p-2 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
           title="GitHub Repository"
         >
           <Github size={20} />
