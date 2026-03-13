@@ -1,6 +1,6 @@
 <script lang="ts">
 import "./layout.css";
-import { ChevronDown, Command, Github, Search, X } from "lucide-svelte";
+import { ChevronDown, Github, Search, X } from "lucide-svelte";
 import { page } from "$app/state";
 import favicon from "$lib/assets/favicon.svg";
 import { type Tool, toolCategories, tools } from "$lib/utils/tools";
@@ -217,19 +217,6 @@ function isTypingTarget(target: EventTarget | null): boolean {
       </div>
 
       <div class="flex items-center gap-4">
-        <!-- Search placeholder -->
-        <button
-          onclick={openToolsWithSearch}
-          class="hidden h-9 w-40 items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-50 px-3 text-sm text-neutral-400 transition-colors hover:border-neutral-300 sm:flex lg:w-64"
-        >
-          <Search size={14} />
-          <span class="flex-1 text-left">Search tools...</span>
-          <div class="flex items-center gap-0.5 rounded border border-neutral-200 bg-white px-1 py-0.5 text-[10px] font-medium">
-            <Command size={10} />
-            <span>K</span>
-          </div>
-        </button>
-
         <a
           href="https://github.com/KnowSky404/PureTools"
           target="_blank"
