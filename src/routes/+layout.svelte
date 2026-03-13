@@ -1,20 +1,47 @@
 <script lang="ts">
 import "./layout.css";
-import { Command, Github, Search } from "lucide-svelte";
+import { ChevronDown, Command, Github, Search } from "lucide-svelte";
 import { page } from "$app/state";
 import favicon from "$lib/assets/favicon.svg";
+import { tools } from "$lib/utils/tools";
 
 const { children } = $props();
 
-const navItems = [
-  { name: "UUID", href: "/uuid" },
-  { name: "JSON", href: "/json" },
-  { name: "Regex", href: "/regex" },
-  { name: "CRON", href: "/cron" },
-  { name: "SQL", href: "/sql" },
-  { name: "Timestamp", href: "/timestamp" },
-  { name: "GitHub CDN", href: "/jsdelivr" },
-];
+let toolsOpen = $state(false);
+let toolsMenu = $state<HTMLDivElement | null>(null);
+
+$effect(() => {
+  if (!toolsOpen) {
+    return;
+  }
+  const handleClick = (event: MouseEvent) => {
+    if (!toolsMenu) {
+      return;
+    }
+    if (!toolsMenu.contains(event.target as Node)) {
+      toolsOpen = false;
+    }
+  };
+  const handleKeydown = (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      toolsOpen = false;
+    }
+  };
+  document.addEventListener("click", handleClick);
+  document.addEventListener("keydown", handleKeydown);
+  return () => {
+    document.removeEventListener("click", handleClick);
+    document.removeEventListener("keydown", handleKeydown);
+  };
+});
+
+function toggleTools(): void {
+  toolsOpen = !toolsOpen;
+}
+
+function closeTools(): void {
+  toolsOpen = false;
+}
 </script>
 
 <svelte:head>
@@ -26,7 +53,7 @@ const navItems = [
   <!-- Header -->
   <header class="sticky top-0 z-50 border-b border-neutral-200 bg-white/80 backdrop-blur-md">
     <div class="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center gap-6">
+      <div class="flex items-center gap-4">
         <a href="/" class="flex items-center gap-2 group">
           <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white shadow-sm transition-transform group-hover:scale-105">
             <span class="font-bold text-lg">P</span>
@@ -34,16 +61,48 @@ const navItems = [
           <span class="hidden font-bold tracking-tight text-neutral-900 sm:inline-block">PureTools</span>
         </a>
 
-        <nav class="hidden gap-1 md:flex">
-          {#each navItems as item}
-            <a
-              href={item.href}
-              class="rounded-md px-3 py-1.5 text-sm font-medium transition-colors {page.url.pathname === item.href ? 'bg-neutral-100 text-indigo-600' : 'text-neutral-500 hover:bg-neutral-50 hover:text-neutral-900'}"
-            >
-              {item.name}
-            </a>
-          {/each}
-        </nav>
+        <div class="relative" bind:this={toolsMenu}>
+          <button
+            onclick={toggleTools}
+            class="flex items-center gap-2 rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-sm font-semibold text-neutral-600 transition hover:border-neutral-300 hover:text-neutral-900"
+          >
+            Tools
+            <ChevronDown size={14} class="transition-transform {toolsOpen ? 'rotate-180' : ''}" />
+          </button>
+
+          {#if toolsOpen}
+            <div class="absolute left-1/2 top-full z-50 mt-3 w-[90vw] max-w-2xl -translate-x-1/2 rounded-2xl border border-neutral-200 bg-white shadow-xl sm:left-0 sm:translate-x-0">
+              <div class="max-h-[60vh] overflow-auto p-3 sm:p-4">
+                <div class="grid gap-2 sm:grid-cols-2">
+                  {#each tools as tool}
+                    <a
+                      href={tool.href}
+                      onclick={closeTools}
+                      class="group flex items-start gap-3 rounded-xl border border-transparent p-3 transition hover:border-neutral-200 hover:bg-neutral-50 {page.url.pathname === tool.href ? 'border-neutral-200 bg-neutral-50' : ''}"
+                    >
+                      <div class="mt-0.5 flex h-9 w-9 items-center justify-center rounded-lg border {tool.color} {tool.hoverColor}">
+                        <tool.icon size={18} />
+                      </div>
+                      <div class="min-w-0">
+                        <div class="text-sm font-semibold text-neutral-900">{tool.name}</div>
+                        <div class="text-xs text-neutral-500">{tool.description}</div>
+                      </div>
+                    </a>
+                  {/each}
+                </div>
+              </div>
+              <div class="border-t border-neutral-200 px-4 py-3 text-xs text-neutral-500">
+                <a
+                  href="/"
+                  onclick={closeTools}
+                  class="font-semibold text-indigo-600 hover:text-indigo-700"
+                >
+                  Browse all tools →
+                </a>
+              </div>
+            </div>
+          {/if}
+        </div>
       </div>
 
       <div class="flex items-center gap-4">
