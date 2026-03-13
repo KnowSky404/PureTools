@@ -1,14 +1,22 @@
 <script lang="ts">
 import "./layout.css";
-import { ChevronDown, Command, Github, Search } from "lucide-svelte";
+import { ChevronDown, Command, Github, Search, X } from "lucide-svelte";
 import { page } from "$app/state";
 import favicon from "$lib/assets/favicon.svg";
-import { tools } from "$lib/utils/tools";
+import { type Tool, toolCategories, tools } from "$lib/utils/tools";
 
 const { children } = $props();
 
 let toolsOpen = $state(false);
+let toolQuery = $state("");
 let toolsMenu = $state<HTMLDivElement | null>(null);
+let searchInput = $state<HTMLInputElement | null>(null);
+
+$effect(() => {
+  if (!toolsOpen) {
+    toolQuery = "";
+  }
+});
 
 $effect(() => {
   if (!toolsOpen) {
@@ -35,12 +43,53 @@ $effect(() => {
   };
 });
 
+const normalizedQuery = $derived.by(() => toolQuery.trim().toLowerCase());
+
+const filteredTools = $derived.by(() => {
+  if (!normalizedQuery) {
+    return tools;
+  }
+  return tools.filter((tool) => matchesQuery(tool, normalizedQuery));
+});
+
+const groupedTools = $derived.by(() => {
+  const groups = new Map<string, Tool[]>();
+  for (const tool of filteredTools) {
+    const group = groups.get(tool.category) ?? [];
+    group.push(tool);
+    groups.set(tool.category, group);
+  }
+  return toolCategories
+    .filter((category) => groups.has(category))
+    .map((category) => ({
+      category,
+      items: groups.get(category) ?? [],
+    }));
+});
+
 function toggleTools(): void {
   toolsOpen = !toolsOpen;
 }
 
+function openToolsWithSearch(): void {
+  toolsOpen = true;
+  setTimeout(() => searchInput?.focus(), 0);
+}
+
 function closeTools(): void {
   toolsOpen = false;
+}
+
+function clearSearch(): void {
+  toolQuery = "";
+  searchInput?.focus();
+}
+
+function matchesQuery(tool: Tool, query: string): boolean {
+  const haystack = [tool.name, tool.description, tool.category, tool.href, ...tool.keywords]
+    .join(" ")
+    .toLowerCase();
+  return haystack.includes(query);
 }
 </script>
 
@@ -72,24 +121,60 @@ function closeTools(): void {
 
           {#if toolsOpen}
             <div class="absolute left-1/2 top-full z-50 mt-3 w-[90vw] max-w-2xl -translate-x-1/2 rounded-2xl border border-neutral-200 bg-white shadow-xl sm:left-0 sm:translate-x-0">
-              <div class="max-h-[60vh] overflow-auto p-3 sm:p-4">
-                <div class="grid gap-2 sm:grid-cols-2">
-                  {#each tools as tool}
-                    <a
-                      href={tool.href}
-                      onclick={closeTools}
-                      class="group flex items-start gap-3 rounded-xl border border-transparent p-3 transition hover:border-neutral-200 hover:bg-neutral-50 {page.url.pathname === tool.href ? 'border-neutral-200 bg-neutral-50' : ''}"
+              <div class="border-b border-neutral-200 p-3 sm:p-4">
+                <div class="flex items-center gap-2 rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2">
+                  <Search size={14} class="text-neutral-400" />
+                  <input
+                    bind:this={searchInput}
+                    bind:value={toolQuery}
+                    placeholder="Search tools..."
+                    class="w-full bg-transparent text-sm text-neutral-700 outline-none"
+                  />
+                  {#if toolQuery}
+                    <button
+                      onclick={clearSearch}
+                      class="rounded-md p-1 text-neutral-400 transition hover:text-neutral-600"
                     >
-                      <div class="mt-0.5 flex h-9 w-9 items-center justify-center rounded-lg border {tool.color} {tool.hoverColor}">
-                        <tool.icon size={18} />
-                      </div>
-                      <div class="min-w-0">
-                        <div class="text-sm font-semibold text-neutral-900">{tool.name}</div>
-                        <div class="text-xs text-neutral-500">{tool.description}</div>
-                      </div>
-                    </a>
-                  {/each}
+                      <X size={14} />
+                    </button>
+                  {/if}
                 </div>
+                <div class="mt-2 text-xs text-neutral-400">Search by name, keyword, or category.</div>
+              </div>
+
+              <div class="max-h-[60vh] overflow-auto p-3 sm:p-4">
+                {#if groupedTools.length === 0}
+                  <div class="rounded-xl border border-dashed border-neutral-200 bg-neutral-50 px-4 py-6 text-center text-sm text-neutral-400">
+                    No tools match “{toolQuery}”.
+                  </div>
+                {:else}
+                  <div class="space-y-4">
+                    {#each groupedTools as group}
+                      <div class="space-y-2">
+                        <div class="px-1 text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
+                          {group.category}
+                        </div>
+                        <div class="grid gap-2 sm:grid-cols-2">
+                          {#each group.items as tool}
+                            <a
+                              href={tool.href}
+                              onclick={closeTools}
+                              class="group flex items-start gap-3 rounded-xl border border-transparent p-3 transition hover:border-neutral-200 hover:bg-neutral-50 {page.url.pathname === tool.href ? 'border-neutral-200 bg-neutral-50' : ''}"
+                            >
+                              <div class="mt-0.5 flex h-9 w-9 items-center justify-center rounded-lg border {tool.color} {tool.hoverColor}">
+                                <tool.icon size={18} />
+                              </div>
+                              <div class="min-w-0">
+                                <div class="text-sm font-semibold text-neutral-900">{tool.name}</div>
+                                <div class="text-xs text-neutral-500">{tool.description}</div>
+                              </div>
+                            </a>
+                          {/each}
+                        </div>
+                      </div>
+                    {/each}
+                  </div>
+                {/if}
               </div>
               <div class="border-t border-neutral-200 px-4 py-3 text-xs text-neutral-500">
                 <a
@@ -107,7 +192,10 @@ function closeTools(): void {
 
       <div class="flex items-center gap-4">
         <!-- Search placeholder -->
-        <button class="hidden h-9 w-40 items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-50 px-3 text-sm text-neutral-400 transition-colors hover:border-neutral-300 sm:flex lg:w-64">
+        <button
+          onclick={openToolsWithSearch}
+          class="hidden h-9 w-40 items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-50 px-3 text-sm text-neutral-400 transition-colors hover:border-neutral-300 sm:flex lg:w-64"
+        >
           <Search size={14} />
           <span class="flex-1 text-left">Search tools...</span>
           <div class="flex items-center gap-0.5 rounded border border-neutral-200 bg-white px-1 py-0.5 text-[10px] font-medium">
