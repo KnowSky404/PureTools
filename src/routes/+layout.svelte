@@ -9,6 +9,7 @@ const { children } = $props();
 const navItems = [
   { name: "UUID", href: "/uuid" },
   { name: "JSON", href: "/json" },
+  { name: "Regex", href: "/regex" },
   { name: "SQL", href: "/sql" },
   { name: "Timestamp", href: "/timestamp" },
   { name: "GitHub CDN", href: "/jsdelivr" },

@@ -1,5 +1,6 @@
 <script lang="ts">
 import {
+  Asterisk,
   Braces,
   ChevronRight,
   Clock,
@@ -27,6 +28,14 @@ const tools = [
     href: "/json",
     color: "bg-emerald-50 text-emerald-600 border-emerald-100",
     hoverColor: "group-hover:bg-emerald-600 group-hover:text-white",
+  },
+  {
+    name: "Regex Tool",
+    description: "Validate, test, and generate regex patterns",
+    icon: Asterisk,
+    href: "/regex",
+    color: "bg-rose-50 text-rose-600 border-rose-100",
+    hoverColor: "group-hover:bg-rose-600 group-hover:text-white",
   },
   {
     name: "SQL Formatter",

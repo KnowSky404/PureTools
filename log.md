@@ -138,3 +138,9 @@ SQL Format
 
 修正：`pre-commit` 钩子从 `pnpm lint-staged` 切换为 `bunx lint-staged`，避免无 pnpm 环境提交失败。
 配置：`package.json` 新增 `"packageManager": "bun@1.3.10"`，明确项目统一使用 Bun。
+
+## 20260313
+
+新增：Regex 工具页，支持正则校验、匹配高亮、结果列表与零长度提示。
+新增：Regex 生成器支持前后缀、字符集、量词、锚点与模板，一键应用到校验器。
+更新：首页与导航新增 Regex 入口。
