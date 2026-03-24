@@ -63,3 +63,7 @@ bun run dev
 ## 说明
 
 - 所有工具均在浏览器本地运行，不会上传任何数据。
+
+## 许可证
+
+本项目采用 GNU Affero General Public License v3.0 或更高版本授权（`AGPL-3.0-or-later`）。详见 [LICENSE](LICENSE) 文件。
