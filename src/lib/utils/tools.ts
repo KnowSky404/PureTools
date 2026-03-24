@@ -9,6 +9,7 @@ import {
   Hash,
   KeyRound,
   Link2,
+  Shuffle,
   Timer,
 } from "lucide-svelte";
 
@@ -45,6 +46,16 @@ export const tools: Tool[] = [
     hoverColor: "group-hover:bg-indigo-600 group-hover:text-white",
     category: "Identifiers",
     keywords: ["uuid", "guid", "v4", "id"],
+  },
+  {
+    name: "Random String Generator",
+    description: "Generate random strings for email prefixes, IDs, and slugs",
+    icon: Shuffle,
+    href: "/random-string",
+    color: "bg-emerald-50 text-emerald-600 border-emerald-100",
+    hoverColor: "group-hover:bg-emerald-600 group-hover:text-white",
+    category: "Identifiers",
+    keywords: ["random", "string", "generator", "email", "prefix", "slug"],
   },
   {
     name: "JSON Formatter",

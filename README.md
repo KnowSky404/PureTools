@@ -14,6 +14,7 @@ PureTools is a lightweight, privacy-first, pure-frontend toolkit for developers.
 ## Tools
 
 - UUID Generator (RFC 4122 v4): generate, validate, history, copy
+- Random String Generator: email-prefix-friendly presets, batch generation, copy, history
 - JSON Formatter: format, minify, validate, escape/unescape, syntax highlight, line numbers, copy
 - SQL Formatter: format/minify, basic validation (strings/parentheses), line numbers, copy
 - Regex Tool: validate, test, highlight matches, generator templates
