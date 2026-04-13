@@ -46,6 +46,28 @@ describe("generateRandomNames", () => {
     }
   });
 
+  test("uses native scripts for China, Japan, and South Korea", () => {
+    const chinese = generateRandomNames({
+      country: "cn",
+      gender: "female",
+      count: 1,
+    })[0];
+    const japanese = generateRandomNames({
+      country: "jp",
+      gender: "male",
+      count: 1,
+    })[0];
+    const korean = generateRandomNames({
+      country: "kr",
+      gender: "female",
+      count: 1,
+    })[0];
+
+    expect(chinese.fullName).toMatch(/[\u4e00-\u9fff]/);
+    expect(japanese.fullName).toMatch(/[\u3040-\u30ff\u4e00-\u9faf]/);
+    expect(korean.fullName).toMatch(/[\uac00-\ud7af]/);
+  });
+
   test("resolves random gender to male or female per result", () => {
     const results = generateRandomNames({
       country: "jp",
@@ -75,7 +97,7 @@ describe("generateRandomNames", () => {
 
   test("applies western order when requested", () => {
     const results = generateRandomNames({
-      country: "kr",
+      country: "us",
       gender: "female",
       count: 1,
       displayOrder: "western",
@@ -84,6 +106,19 @@ describe("generateRandomNames", () => {
     const [result] = results;
     expect(result.westernFullName).toBe(`${result.givenName} ${result.familyName}`);
     expect(result.fullName).toBe(result.westernFullName);
+  });
+
+  test("falls back to local order for countries without western order support", () => {
+    const results = generateRandomNames({
+      country: "kr",
+      gender: "female",
+      count: 1,
+      displayOrder: "western",
+    });
+
+    const [result] = results;
+    expect(result.localizedFullName).toBe(`${result.familyName} ${result.givenName}`);
+    expect(result.fullName).toBe(result.localizedFullName);
   });
 
   test("formats generated names for both display orders", () => {

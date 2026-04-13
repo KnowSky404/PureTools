@@ -8,6 +8,7 @@ type NameDataset = {
   maleGivenNames: string[];
   femaleGivenNames: string[];
   localOrder: "family-first" | "given-first";
+  supportsWesternOrder: boolean;
 };
 
 export type RandomNameOptions = {
@@ -74,113 +75,80 @@ export const randomNameDatasets: Record<SupportedCountry, NameDataset> = {
       "Ella",
     ],
     localOrder: "given-first",
+    supportsWesternOrder: true,
   },
   cn: {
-    familyNames: ["Wang", "Li", "Zhang", "Liu", "Chen", "Yang", "Zhao", "Huang", "Zhou", "Wu"],
-    maleGivenNames: [
-      "Wei",
-      "Jie",
-      "Jun",
-      "Hao",
-      "Ming",
-      "Tao",
-      "Lei",
-      "Bo",
-      "Peng",
-      "Yu",
-      "Qiang",
-      "Bin",
-    ],
-    femaleGivenNames: [
-      "Li",
-      "Na",
-      "Jing",
-      "Yan",
-      "Ting",
-      "Yue",
-      "Xin",
-      "Fang",
-      "Min",
-      "Xue",
-      "Ling",
-      "Qian",
-    ],
+    familyNames: ["王", "李", "张", "刘", "陈", "杨", "赵", "黄", "周", "吴"],
+    maleGivenNames: ["伟", "杰", "俊", "浩", "明", "涛", "磊", "博", "鹏", "宇", "强", "斌"],
+    femaleGivenNames: ["丽", "娜", "静", "妍", "婷", "悦", "欣", "芳", "敏", "雪", "玲", "倩"],
     localOrder: "family-first",
+    supportsWesternOrder: false,
   },
   jp: {
-    familyNames: [
-      "Sato",
-      "Suzuki",
-      "Takahashi",
-      "Tanaka",
-      "Watanabe",
-      "Ito",
-      "Yamamoto",
-      "Nakamura",
-      "Kobayashi",
-      "Kato",
-    ],
+    familyNames: ["佐藤", "鈴木", "高橋", "田中", "渡辺", "伊藤", "山本", "中村", "小林", "加藤"],
     maleGivenNames: [
-      "Haruto",
-      "Yuto",
-      "Sota",
-      "Yuki",
-      "Hayato",
-      "Koki",
-      "Sora",
-      "Ren",
-      "Kenta",
-      "Daiki",
-      "Takumi",
-      "Itsuki",
+      "陽斗",
+      "悠真",
+      "蒼太",
+      "樹",
+      "湊",
+      "蓮",
+      "大和",
+      "颯真",
+      "大翔",
+      "健太",
+      "拓海",
+      "樹生",
     ],
     femaleGivenNames: [
-      "Yui",
-      "Aoi",
-      "Hina",
-      "Yuna",
-      "Mei",
-      "Rin",
-      "Sakura",
-      "Akari",
-      "Mio",
-      "Nanami",
-      "Honoka",
-      "Misaki",
+      "結衣",
+      "葵",
+      "陽菜",
+      "結菜",
+      "芽依",
+      "凛",
+      "桜",
+      "朱莉",
+      "美桜",
+      "七海",
+      "穂香",
+      "美咲",
     ],
     localOrder: "family-first",
+    supportsWesternOrder: false,
   },
   kr: {
-    familyNames: ["Kim", "Lee", "Park", "Choi", "Jung", "Kang", "Cho", "Yoon", "Jang", "Lim"],
+    familyNames: ["김", "이", "박", "최", "정", "강", "조", "윤", "장", "임"],
     maleGivenNames: [
-      "Minjun",
-      "Seojun",
-      "Jiho",
-      "Dohyun",
-      "Junseo",
-      "Hyunwoo",
-      "Jisung",
-      "Taeyang",
-      "Yejun",
-      "Siwoo",
-      "Geonwoo",
-      "Woojin",
+      "민준",
+      "서준",
+      "지호",
+      "도현",
+      "준서",
+      "현우",
+      "지성",
+      "태양",
+      "예준",
+      "시우",
+      "건우",
+      "우진",
     ],
     femaleGivenNames: [
-      "Minji",
-      "Seoyeon",
-      "Jiwoo",
-      "Sujin",
-      "Hayoon",
-      "Yuna",
-      "Jiwon",
-      "Chaewon",
-      "Sohee",
-      "Eunji",
-      "Yeseo",
-      "Nari",
+      "민지",
+      "서연",
+      "지우",
+      "수진",
+      "하윤",
+      "유나",
+      "지원",
+      "채원",
+      "소희",
+      "은지",
+      "예서",
+      "나리",
     ],
     localOrder: "family-first",
+    supportsWesternOrder: false,
   },
 };
 
@@ -189,6 +157,10 @@ export function formatGeneratedName(
   displayOrder: NameDisplayOrder,
 ): string {
   return displayOrder === "western" ? name.westernFullName : name.localizedFullName;
+}
+
+export function supportsWesternOrder(country: SupportedCountry): boolean {
+  return randomNameDatasets[country].supportsWesternOrder;
 }
 
 function assertSupportedCountry(country: string): asserts country is SupportedCountry {
@@ -267,9 +239,12 @@ export function generateRandomNames(options: RandomNameOptions): GeneratedName[]
   assertSupportedGender(options.gender);
   ensureCrypto();
 
-  const count = resolveCount(options.count);
-  const displayOrder = options.displayOrder ?? "local";
   const dataset = randomNameDatasets[options.country];
+  const count = resolveCount(options.count);
+  const displayOrder =
+    options.displayOrder === "western" && !dataset.supportsWesternOrder
+      ? "local"
+      : (options.displayOrder ?? "local");
 
   if (!dataset.familyNames.length) {
     throw new Error(`Dataset for ${options.country} is missing family names.`);

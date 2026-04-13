@@ -7,6 +7,7 @@ import {
   type NameDisplayOrder,
   type NameGender,
   type SupportedCountry,
+  supportsWesternOrder,
 } from "$lib/utils/random-name";
 
 type CountryOption = {
@@ -74,6 +75,7 @@ const primaryName = $derived(generatedNames[0] ?? null);
 const activeCountry = $derived(
   countryOptions.find((option) => option.value === country) ?? countryOptions[0],
 );
+const canUseWesternOrder = $derived(supportsWesternOrder(country));
 
 $effect(() => {
   if (initialized) {
@@ -82,6 +84,16 @@ $effect(() => {
 
   initialized = true;
   void handleGenerate();
+});
+
+$effect(() => {
+  if (canUseWesternOrder) {
+    return;
+  }
+
+  if (displayOrder === "western") {
+    displayOrder = "local";
+  }
 });
 
 function clampBatchCount(): void {
@@ -156,9 +168,9 @@ function resetCopyFeedback(): void {
           </p>
         </div>
         <p class="max-w-2xl text-sm leading-6 text-neutral-500">
-          All names are generated locally in your browser from a compact built-in dataset. Use
-          local order for country-native display, or switch to English order when you need
-          westernized output.
+          All names are generated locally in your browser from a compact built-in dataset. The US
+          uses English names, while China, Japan, and South Korea generate names in their native
+          scripts.
         </p>
       </div>
     </div>
@@ -169,6 +181,9 @@ function resetCopyFeedback(): void {
         Name order hint
       </div>
       <p class="mt-2">{activeCountry.localOrderHint}</p>
+      {#if !canUseWesternOrder}
+        <p class="mt-1 text-xs text-neutral-500">This country only supports local script and local order.</p>
+      {/if}
     </div>
   </div>
 
@@ -218,17 +233,19 @@ function resetCopyFeedback(): void {
             <p class="text-xs leading-5 text-neutral-500">Generate between 1 and 20 names per run.</p>
           </label>
 
-          <label class="block space-y-2">
-            <span class="text-sm font-semibold text-neutral-700">Display Order</span>
-            <select
-              bind:value={displayOrder}
-              class="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-900 outline-none transition focus:border-rose-500 focus:bg-white focus:ring-4 focus:ring-rose-500/5"
-            >
-              {#each displayOrderOptions as option}
-                <option value={option.value}>{option.label}</option>
-              {/each}
-            </select>
-          </label>
+          {#if canUseWesternOrder}
+            <label class="block space-y-2">
+              <span class="text-sm font-semibold text-neutral-700">Display Order</span>
+              <select
+                bind:value={displayOrder}
+                class="w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-900 outline-none transition focus:border-rose-500 focus:bg-white focus:ring-4 focus:ring-rose-500/5"
+              >
+                {#each displayOrderOptions as option}
+                  <option value={option.value}>{option.label}</option>
+                {/each}
+              </select>
+            </label>
+          {/if}
 
           <button
             onclick={handleGenerate}
@@ -247,7 +264,8 @@ function resetCopyFeedback(): void {
         </div>
         <ul class="space-y-3 text-sm leading-6 text-neutral-600">
           <li>`Local Order` follows the naming convention of the selected country.</li>
-          <li>`English Order` always shows given name first, then family name.</li>
+          <li>`English Order` is available only for United States names.</li>
+          <li>China, Japan, and South Korea stay in native script and local order.</li>
           <li>This MVP uses a compact built-in dataset for realistic demo data, not official records.</li>
         </ul>
       </div>
