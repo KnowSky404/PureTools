@@ -7,7 +7,9 @@ import { type Tool, toolCategories, tools } from "$lib/utils/tools";
 
 const { children } = $props();
 
-let toolsOpen = $state(false);
+type ActiveMenu = Tool["category"] | "search" | null;
+
+let activeMenu = $state<ActiveMenu>(null);
 let toolQuery = $state("");
 let toolsMenu = $state<HTMLDivElement | null>(null);
 let searchInput = $state<HTMLInputElement | null>(null);
@@ -16,7 +18,7 @@ let prefersDark = $state(false);
 let themeInitialized = $state(false);
 
 $effect(() => {
-  if (!toolsOpen) {
+  if (activeMenu !== "search") {
     toolQuery = "";
   }
 });
@@ -71,14 +73,14 @@ $effect(() => {
       return;
     }
     event.preventDefault();
-    openToolsWithSearch();
+    openSearch();
   };
   document.addEventListener("keydown", handleGlobalSearch);
   return () => document.removeEventListener("keydown", handleGlobalSearch);
 });
 
 $effect(() => {
-  if (!toolsOpen) {
+  if (!activeMenu) {
     return;
   }
   const handleClick = (event: MouseEvent) => {
@@ -86,12 +88,12 @@ $effect(() => {
       return;
     }
     if (!toolsMenu.contains(event.target as Node)) {
-      toolsOpen = false;
+      activeMenu = null;
     }
   };
   const handleKeydown = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
-      toolsOpen = false;
+      activeMenu = null;
     }
   };
   document.addEventListener("click", handleClick);
@@ -126,17 +128,21 @@ const groupedTools = $derived.by(() => {
     }));
 });
 
-function toggleTools(): void {
-  toolsOpen = !toolsOpen;
+function getCategoryTools(category: Tool["category"]): Tool[] {
+  return tools.filter((tool) => tool.category === category);
 }
 
-function openToolsWithSearch(): void {
-  toolsOpen = true;
+function toggleCategoryMenu(category: Tool["category"]): void {
+  activeMenu = activeMenu === category ? null : category;
+}
+
+function openSearch(): void {
+  activeMenu = "search";
   setTimeout(() => searchInput?.focus(), 0);
 }
 
-function closeTools(): void {
-  toolsOpen = false;
+function closeMenus(): void {
+  activeMenu = null;
 }
 
 function clearSearch(): void {
@@ -183,7 +189,7 @@ function isTypingTarget(target: EventTarget | null): boolean {
   <!-- Header -->
   <header class="sticky top-0 z-50 border-b border-neutral-200 bg-white/80 backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-950/80">
     <div class="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center gap-4">
+      <div class="relative flex items-center gap-4" bind:this={toolsMenu}>
         <a href="/" class="flex items-center gap-2 group">
           <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white shadow-sm transition-transform group-hover:scale-105">
             <span class="font-bold text-lg">P</span>
@@ -191,87 +197,138 @@ function isTypingTarget(target: EventTarget | null): boolean {
           <span class="hidden font-bold tracking-tight text-neutral-900 sm:inline-block">PureTools</span>
         </a>
 
-        <div class="relative" bind:this={toolsMenu}>
-          <button
-            onclick={toggleTools}
-            class="flex items-center gap-2 rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-sm font-semibold text-neutral-600 transition hover:border-neutral-300 hover:text-neutral-900"
-          >
-            Tools
-            <ChevronDown size={14} class="transition-transform {toolsOpen ? 'rotate-180' : ''}" />
-          </button>
+        <div class="hidden items-center gap-2 lg:flex">
+          {#each toolCategories as category}
+            <div class="relative">
+              <button
+                onclick={() => toggleCategoryMenu(category)}
+                class="flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-semibold transition
+                {activeMenu === category
+                  ? 'border-neutral-300 bg-neutral-100 text-neutral-900'
+                  : 'border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300 hover:text-neutral-900'}"
+              >
+                {category}
+                <ChevronDown
+                  size={14}
+                  class="transition-transform {activeMenu === category ? 'rotate-180' : ''}"
+                />
+              </button>
 
-          {#if toolsOpen}
-            <div class="absolute left-1/2 top-full z-50 mt-3 w-[90vw] max-w-2xl -translate-x-1/2 rounded-2xl border border-neutral-200 bg-white shadow-xl sm:left-0 sm:translate-x-0">
-              <div class="border-b border-neutral-200 p-3 sm:p-4">
-                <div class="flex items-center gap-2 rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2">
-                  <Search size={14} class="text-neutral-400" />
-                  <input
-                    bind:this={searchInput}
-                    bind:value={toolQuery}
-                    placeholder="Search tools..."
-                    class="w-full bg-transparent text-sm text-neutral-700 outline-none"
-                  />
-                  {#if toolQuery}
-                    <button
-                      onclick={clearSearch}
-                      class="rounded-md p-1 text-neutral-400 transition hover:text-neutral-600"
-                    >
-                      <X size={14} />
-                    </button>
-                  {/if}
-                </div>
-                <div class="mt-2 text-xs text-neutral-400">Search by name, keyword, or category.</div>
-              </div>
-
-              <div class="max-h-[60vh] overflow-auto p-3 sm:p-4">
-                {#if groupedTools.length === 0}
-                  <div class="rounded-xl border border-dashed border-neutral-200 bg-neutral-50 px-4 py-6 text-center text-sm text-neutral-400">
-                    No tools match “{toolQuery}”.
+              {#if activeMenu === category}
+                <div class="absolute left-0 top-full z-50 mt-3 w-80 rounded-2xl border border-neutral-200 bg-white p-3 shadow-xl">
+                  <div class="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
+                    {category}
                   </div>
-                {:else}
-                  <div class="space-y-4">
-                    {#each groupedTools as group}
-                      <div class="space-y-2">
-                        <div class="px-1 text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
-                          {group.category}
+                  <div class="space-y-2">
+                    {#each getCategoryTools(category) as tool}
+                      <a
+                        href={tool.href}
+                        onclick={closeMenus}
+                        class="group flex items-start gap-3 rounded-xl border border-transparent p-3 transition hover:border-neutral-200 hover:bg-neutral-50 {page.url.pathname === tool.href ? 'border-neutral-200 bg-neutral-50' : ''}"
+                      >
+                        <div class="mt-0.5 flex h-9 w-9 items-center justify-center rounded-lg border {tool.color} {tool.hoverColor}">
+                          <tool.icon size={18} />
                         </div>
-                        <div class="grid gap-2 sm:grid-cols-2">
-                          {#each group.items as tool}
-                            <a
-                              href={tool.href}
-                              onclick={closeTools}
-                              class="group flex items-start gap-3 rounded-xl border border-transparent p-3 transition hover:border-neutral-200 hover:bg-neutral-50 {page.url.pathname === tool.href ? 'border-neutral-200 bg-neutral-50' : ''}"
-                            >
-                              <div class="mt-0.5 flex h-9 w-9 items-center justify-center rounded-lg border {tool.color} {tool.hoverColor}">
-                                <tool.icon size={18} />
-                              </div>
-                              <div class="min-w-0">
-                                <div class="text-sm font-semibold text-neutral-900">{tool.name}</div>
-                                <div class="text-xs text-neutral-500">{tool.description}</div>
-                              </div>
-                            </a>
-                          {/each}
+                        <div class="min-w-0">
+                          <div class="text-sm font-semibold text-neutral-900">{tool.name}</div>
+                          <div class="text-xs text-neutral-500">{tool.description}</div>
                         </div>
-                      </div>
+                      </a>
                     {/each}
                   </div>
+                </div>
+              {/if}
+            </div>
+          {/each}
+
+          <div class="relative">
+            <button
+              onclick={openSearch}
+              class="flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-semibold transition
+              {activeMenu === 'search'
+                ? 'border-neutral-300 bg-neutral-100 text-neutral-900'
+                : 'border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300 hover:text-neutral-900'}"
+            >
+              <Search size={14} />
+              Search
+            </button>
+          </div>
+        </div>
+
+        {#if activeMenu === "search"}
+          <div class="absolute left-0 top-full z-50 mt-3 w-[90vw] max-w-2xl rounded-2xl border border-neutral-200 bg-white shadow-xl sm:left-1/2 sm:-translate-x-1/2">
+            <div class="border-b border-neutral-200 p-3 sm:p-4">
+              <div class="flex items-center gap-2 rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2">
+                <Search size={14} class="text-neutral-400" />
+                <input
+                  bind:this={searchInput}
+                  bind:value={toolQuery}
+                  placeholder="Search tools..."
+                  class="w-full bg-transparent text-sm text-neutral-700 outline-none"
+                />
+                {#if toolQuery}
+                  <button
+                    onclick={clearSearch}
+                    class="rounded-md p-1 text-neutral-400 transition hover:text-neutral-600"
+                  >
+                    <X size={14} />
+                  </button>
                 {/if}
               </div>
-              <div class="border-t border-neutral-200 px-4 py-3 text-xs text-neutral-500">
-                <a
-                  href="/"
-                  onclick={closeTools}
-                  class="font-semibold text-indigo-600 hover:text-indigo-700"
-                >
-                  Browse all tools →
-                </a>
-              </div>
+              <div class="mt-2 text-xs text-neutral-400">Search by name, keyword, or category.</div>
             </div>
-          {/if}
-        </div>
+
+            <div class="max-h-[60vh] overflow-auto p-3 sm:p-4">
+              {#if groupedTools.length === 0}
+                <div class="rounded-xl border border-dashed border-neutral-200 bg-neutral-50 px-4 py-6 text-center text-sm text-neutral-400">
+                  No tools match “{toolQuery}”.
+                </div>
+              {:else}
+                <div class="space-y-4">
+                  {#each groupedTools as group}
+                    <div class="space-y-2">
+                      <div class="px-1 text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
+                        {group.category}
+                      </div>
+                      <div class="grid gap-2 sm:grid-cols-2">
+                        {#each group.items as tool}
+                          <a
+                            href={tool.href}
+                            onclick={closeMenus}
+                            class="group flex items-start gap-3 rounded-xl border border-transparent p-3 transition hover:border-neutral-200 hover:bg-neutral-50 {page.url.pathname === tool.href ? 'border-neutral-200 bg-neutral-50' : ''}"
+                          >
+                            <div class="mt-0.5 flex h-9 w-9 items-center justify-center rounded-lg border {tool.color} {tool.hoverColor}">
+                              <tool.icon size={18} />
+                            </div>
+                            <div class="min-w-0">
+                              <div class="text-sm font-semibold text-neutral-900">{tool.name}</div>
+                              <div class="text-xs text-neutral-500">{tool.description}</div>
+                            </div>
+                          </a>
+                        {/each}
+                      </div>
+                    </div>
+                  {/each}
+                </div>
+              {/if}
+            </div>
+            <div class="border-t border-neutral-200 px-4 py-3 text-xs text-neutral-500">
+              <a href="/" onclick={closeMenus} class="font-semibold text-indigo-600 hover:text-indigo-700">
+                Browse all tools →
+              </a>
+            </div>
+          </div>
+        {/if}
       </div>
 
       <div class="flex items-center gap-4">
+        <button
+          onclick={openSearch}
+          class="rounded-lg border border-neutral-200 bg-white p-2 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 lg:hidden"
+          title="Search tools"
+        >
+          <Search size={18} />
+        </button>
         <button
           onclick={cycleTheme}
           class="rounded-lg border border-neutral-200 bg-white p-2 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
