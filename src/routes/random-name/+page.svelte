@@ -68,8 +68,11 @@ let generatedNames = $state<GeneratedName[]>([]);
 let errorMessage = $state("");
 let copiedValue = $state("");
 let copyLabel = $state("Copy");
+let toastMessage = $state("");
+let toastTone = $state<"success" | "error">("success");
 let initialized = false;
 let copyFeedbackTimer: ReturnType<typeof setTimeout> | null = null;
+let toastTimer: ReturnType<typeof setTimeout> | null = null;
 
 const primaryName = $derived(generatedNames[0] ?? null);
 const activeCountry = $derived(
@@ -83,7 +86,7 @@ $effect(() => {
   }
 
   initialized = true;
-  void handleGenerate();
+  void handleGenerate(false);
 });
 
 $effect(() => {
@@ -109,7 +112,20 @@ function formatGenderLabel(value: GeneratedName["gender"]): string {
   return value === "male" ? "Male" : "Female";
 }
 
-async function handleGenerate(): Promise<void> {
+function showToast(message: string, tone: "success" | "error"): void {
+  toastMessage = message;
+  toastTone = tone;
+
+  if (toastTimer) {
+    clearTimeout(toastTimer);
+  }
+
+  toastTimer = setTimeout(() => {
+    toastMessage = "";
+  }, 1800);
+}
+
+async function handleGenerate(shouldCopyPrimary = true): Promise<void> {
   errorMessage = "";
   clampBatchCount();
 
@@ -120,10 +136,18 @@ async function handleGenerate(): Promise<void> {
       count: batchCount,
       displayOrder,
     });
-    resetCopyFeedback();
+
+    const nextPrimary = generatedNames[0] ?? null;
+
+    if (shouldCopyPrimary && nextPrimary) {
+      await handleCopy(nextPrimary.fullName, "Primary copied");
+    } else {
+      resetCopyFeedback();
+    }
   } catch (error) {
     generatedNames = [];
     errorMessage = error instanceof Error ? error.message : "Failed to generate random names.";
+    showToast("Failed to generate names", "error");
   }
 }
 
@@ -132,6 +156,7 @@ async function handleCopy(value: string, successLabel = "Copied!"): Promise<void
 
   copiedValue = value;
   copyLabel = success ? successLabel : "Copy failed";
+  showToast(success ? successLabel : "Copy failed", success ? "success" : "error");
 
   if (copyFeedbackTimer) {
     clearTimeout(copyFeedbackTimer);
@@ -216,11 +241,11 @@ function resetCopyFeedback(): void {
           {/if}
 
           <button
-            onclick={handleGenerate}
+            onclick={() => handleGenerate(true)}
             class="flex w-full items-center justify-center gap-2 rounded-2xl bg-rose-600 px-5 py-3.5 text-sm font-bold text-white shadow-sm transition hover:bg-rose-700 active:scale-[0.99]"
           >
             <RefreshCw size={16} />
-            Generate Names
+            Generate & Copy Primary
           </button>
         </div>
       </div>
@@ -352,3 +377,16 @@ function resetCopyFeedback(): void {
     </section>
   </div>
 </div>
+
+{#if toastMessage}
+  <div class="fixed bottom-4 right-4 z-50">
+    <div
+      class="rounded-2xl border px-4 py-3 text-sm font-semibold shadow-lg backdrop-blur-sm transition
+      {toastTone === 'success'
+        ? 'border-emerald-200 bg-emerald-50/95 text-emerald-700'
+        : 'border-red-200 bg-red-50/95 text-red-700'}"
+    >
+      {toastMessage}
+    </div>
+  </div>
+{/if}
