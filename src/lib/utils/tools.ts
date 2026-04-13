@@ -17,7 +17,7 @@ import {
 export const toolCategories = [
   "Identifiers",
   "Formatters",
-  "Pattern & Scheduling",
+  "Patterns",
   "Encoding",
   "Security",
   "Time",
@@ -95,7 +95,7 @@ export const tools: Tool[] = [
     href: "/regex",
     color: "bg-rose-50 text-rose-600 border-rose-100",
     hoverColor: "group-hover:bg-rose-600 group-hover:text-white",
-    category: "Pattern & Scheduling",
+    category: "Patterns",
     keywords: ["regex", "regexp", "pattern", "match"],
   },
   {
@@ -105,7 +105,7 @@ export const tools: Tool[] = [
     href: "/cron",
     color: "bg-cyan-50 text-cyan-600 border-cyan-100",
     hoverColor: "group-hover:bg-cyan-600 group-hover:text-white",
-    category: "Pattern & Scheduling",
+    category: "Patterns",
     keywords: ["cron", "schedule", "job", "timer"],
   },
   {
