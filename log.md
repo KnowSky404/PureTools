@@ -83,8 +83,6 @@ https://svelte.dev/e/constant_binding
 更新：扩展 `commit-msg` 允许的提交类型（feat/fix/docs/style/refactor/perf/test/build/ci/chore/revert）。
 更新：移除首页中 UUID 的占位卡片，避免与已完成的工具重复。
 
-我现在还需要调整首页的内容，就是目前UUID不是已经完成开发了，那么之前预留的那个卡片占位符可以去掉了
-
 JSON Format 在以上改动的基础上，需要包含的功能:
 1. JSON的压缩
 2. JSON的格式化
@@ -161,3 +159,9 @@ SQL Format
 新增：随机字符串纯函数工具，统一处理字符池构建、参数校验与基于 Web Crypto 的随机生成。
 更新：首页工具索引与中英文 README，补充随机字符串工具入口与说明。
 更新：项目许可证切换为 GNU AGPL v3.0 or later，新增 `LICENSE` 文件并同步更新 `package.json` 与双语 README 的授权声明。
+
+## 20260413
+
+新增需求设计：随机姓名生成器，支持美国、中国、日本、韩国四个国家。
+设计范围：支持 `random` / `male` / `female` 性别筛选、批量生成、本地顺序与英文顺序切换、完整姓名与姓/名拆分展示。
+实现约束：采用纯前端内置轻量词库，不引入外部 API 或远程数据源，后续按 spec 进入实现。
