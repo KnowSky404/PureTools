@@ -379,7 +379,7 @@ function resetCopyFeedback(): void {
 </div>
 
 {#if toastMessage}
-  <div class="fixed bottom-4 right-4 z-50">
+  <div class="fixed left-1/2 top-20 z-50 -translate-x-1/2">
     <div
       class="rounded-2xl border px-4 py-3 text-sm font-semibold shadow-lg backdrop-blur-sm transition
       {toastTone === 'success'
