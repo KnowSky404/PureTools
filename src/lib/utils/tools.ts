@@ -11,6 +11,7 @@ import {
   Link2,
   Shuffle,
   Timer,
+  Users,
 } from "lucide-svelte";
 
 export const toolCategories = [
@@ -56,6 +57,26 @@ export const tools: Tool[] = [
     hoverColor: "group-hover:bg-emerald-600 group-hover:text-white",
     category: "Identifiers",
     keywords: ["random", "string", "generator", "email", "prefix", "slug"],
+  },
+  {
+    name: "Random Name Generator",
+    description: "Generate random names for the US, China, Japan, and South Korea",
+    icon: Users,
+    href: "/random-name",
+    color: "bg-rose-50 text-rose-600 border-rose-100",
+    hoverColor: "group-hover:bg-rose-600 group-hover:text-white",
+    category: "Identifiers",
+    keywords: [
+      "random",
+      "name",
+      "generator",
+      "person",
+      "identity",
+      "us",
+      "china",
+      "japan",
+      "korea",
+    ],
   },
   {
     name: "JSON Formatter",

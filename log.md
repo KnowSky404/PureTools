@@ -167,3 +167,5 @@ SQL Format
 实现约束：采用纯前端内置轻量词库，不引入外部 API 或远程数据源，后续按 spec 进入实现。
 新增计划：随机姓名生成器 implementation plan 已写入 `docs/superpowers/plans/2026-04-13-random-name-generator.md`，后续按 TDD 顺序执行。
 新增：随机姓名纯函数工具与 Bun 测试，支持美国、中国、日本、韩国轻量词库、性别筛选、批量生成、顺序切换与参数校验。
+新增：随机姓名生成器工具页，支持国家切换、`random` / `male` / `female` 性别筛选、批量生成、本地顺序与英文顺序切换、主结果和批量结果复制。
+更新：首页工具索引，新增 Random Name Generator 入口。
