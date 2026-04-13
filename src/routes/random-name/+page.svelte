@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Check, Copy, Languages, RefreshCw, UserRound, Users } from "lucide-svelte";
+import { Check, Copy, Languages, RefreshCw, UserRound } from "lucide-svelte";
 import { copyToClipboard } from "$lib/utils/clipboard";
 import {
   type GeneratedName,
@@ -155,38 +155,6 @@ function resetCopyFeedback(): void {
 </script>
 
 <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-  <div class="mb-8 flex flex-col gap-4 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm lg:flex-row lg:items-start lg:justify-between">
-    <div class="flex items-start gap-4">
-      <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 ring-1 ring-rose-100">
-        <Users size={26} />
-      </div>
-      <div class="space-y-2">
-        <div>
-          <h1 class="text-2xl font-bold tracking-tight text-neutral-900">Random Name Generator</h1>
-          <p class="mt-1 text-sm font-medium text-neutral-500">
-            Generate lightweight demo names for the US, China, Japan, and South Korea.
-          </p>
-        </div>
-        <p class="max-w-2xl text-sm leading-6 text-neutral-500">
-          All names are generated locally in your browser from a compact built-in dataset. The US
-          uses English names, while China, Japan, and South Korea generate names in their native
-          scripts.
-        </p>
-      </div>
-    </div>
-
-    <div class="rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-600">
-      <div class="flex items-center gap-2 font-semibold text-neutral-900">
-        <Languages size={16} class="text-rose-600" />
-        Name order hint
-      </div>
-      <p class="mt-2">{activeCountry.localOrderHint}</p>
-      {#if !canUseWesternOrder}
-        <p class="mt-1 text-xs text-neutral-500">This country only supports local script and local order.</p>
-      {/if}
-    </div>
-  </div>
-
   <div class="grid gap-8 xl:grid-cols-[340px_minmax(0,1fr)]">
     <section class="space-y-6">
       <div class="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
@@ -263,6 +231,7 @@ function resetCopyFeedback(): void {
           Order Rules
         </div>
         <ul class="space-y-3 text-sm leading-6 text-neutral-600">
+          <li>{activeCountry.localOrderHint}.</li>
           <li>`Local Order` follows the naming convention of the selected country.</li>
           <li>`English Order` is available only for United States names.</li>
           <li>China, Japan, and South Korea stay in native script and local order.</li>

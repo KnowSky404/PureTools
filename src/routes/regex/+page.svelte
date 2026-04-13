@@ -1,5 +1,5 @@
 <script lang="ts">
-import { AlertCircle, Asterisk, Check, Copy, Search, Sparkles, Trash2 } from "lucide-svelte";
+import { AlertCircle, Check, Copy, Search, Sparkles, Trash2 } from "lucide-svelte";
 import { copyToClipboard } from "$lib/utils/clipboard";
 
 type RegexFlagKey = "g" | "i" | "m" | "s" | "u" | "y";
@@ -446,19 +446,6 @@ function escapeRegexLiteral(value: string): string {
 </script>
 
 <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-  <!-- Header Section -->
-  <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <div class="flex items-center gap-4">
-      <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 ring-1 ring-rose-100">
-        <Asterisk size={24} />
-      </div>
-      <div>
-        <h1 class="text-2xl font-bold tracking-tight text-neutral-900">Regex Validator & Generator</h1>
-        <p class="text-sm font-medium text-neutral-500">Test, validate, and craft regex patterns</p>
-      </div>
-    </div>
-  </div>
-
   <div class="grid gap-8 lg:grid-cols-2">
     <!-- Validator -->
     <section class="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition-shadow hover:shadow-md">

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { AlertCircle, Check, Copy, ExternalLink, RefreshCcw, Trash2 } from "lucide-svelte";
+import { AlertCircle, Check, Copy, RefreshCcw, Trash2 } from "lucide-svelte";
 import { copyToClipboard } from "$lib/utils/clipboard";
 
 type Mode = "encode" | "decode";
@@ -65,18 +65,6 @@ function handleSwap(): void {
 </script>
 
 <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-  <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <div class="flex items-center gap-4">
-      <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-50 text-teal-600 ring-1 ring-teal-100">
-        <ExternalLink size={24} />
-      </div>
-      <div>
-        <h1 class="text-2xl font-bold tracking-tight text-neutral-900">URL Encoder</h1>
-        <p class="text-sm font-medium text-neutral-500">Encode or decode URL strings safely</p>
-      </div>
-    </div>
-  </div>
-
   <div class="mb-6 rounded-2xl border border-neutral-200 bg-white p-2 shadow-sm">
     <div class="flex flex-wrap items-center gap-2">
       <div class="flex items-center rounded-xl bg-neutral-100 p-1">

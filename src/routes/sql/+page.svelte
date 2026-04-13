@@ -1,14 +1,5 @@
 <script lang="ts">
-import {
-  AlertCircle,
-  Check,
-  Copy,
-  Database,
-  FileCode,
-  Maximize2,
-  Minimize2,
-  Trash2,
-} from "lucide-svelte";
+import { AlertCircle, Check, Copy, FileCode, Maximize2, Minimize2, Trash2 } from "lucide-svelte";
 import { copyToClipboard } from "$lib/utils/clipboard";
 
 type FormatMode = "format" | "minify";
@@ -328,19 +319,6 @@ function breakTopLevelCommas(value: string, indentSpace: string): string {
 </script>
 
 <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-  <!-- Header Section -->
-  <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <div class="flex items-center gap-4">
-      <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100">
-        <Database size={24} />
-      </div>
-      <div>
-        <h1 class="text-2xl font-bold tracking-tight text-neutral-900">SQL Formatter</h1>
-        <p class="text-sm text-neutral-500 font-medium">Beautify and optimize your SQL queries</p>
-      </div>
-    </div>
-  </div>
-
   <!-- Toolbar -->
   <div class="mb-6 rounded-2xl border border-neutral-200 bg-white p-2 shadow-sm">
     <div class="flex flex-wrap items-center gap-1.5">

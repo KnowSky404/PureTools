@@ -1,5 +1,5 @@
 <script lang="ts">
-import { AlertCircle, Check, Copy, KeyRound, ShieldCheck, Trash2 } from "lucide-svelte";
+import { AlertCircle, Check, Copy, ShieldCheck, Trash2 } from "lucide-svelte";
 import { copyToClipboard } from "$lib/utils/clipboard";
 
 type TimeClaim = {
@@ -157,18 +157,6 @@ function handleClear(): void {
 </script>
 
 <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-  <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <div class="flex items-center gap-4">
-      <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 ring-1 ring-amber-100">
-        <KeyRound size={24} />
-      </div>
-      <div>
-        <h1 class="text-2xl font-bold tracking-tight text-neutral-900">JWT Decoder</h1>
-        <p class="text-sm font-medium text-neutral-500">Decode header and payload locally (no verification)</p>
-      </div>
-    </div>
-  </div>
-
   <div class="mb-6 rounded-2xl border border-neutral-200 bg-white p-2 shadow-sm">
     <div class="flex flex-wrap items-center justify-between gap-2">
       <div class="flex items-center gap-2 text-xs text-neutral-500">

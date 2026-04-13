@@ -1,14 +1,5 @@
 <script lang="ts">
-import {
-  AlertCircle,
-  Check,
-  Copy,
-  Fingerprint,
-  History,
-  RefreshCw,
-  Search,
-  Trash2,
-} from "lucide-svelte";
+import { AlertCircle, Check, Copy, History, RefreshCw, Search, Trash2 } from "lucide-svelte";
 import { copyToClipboard } from "$lib/utils/clipboard";
 import { generateUUID, validateUUID } from "$lib/utils/uuid";
 
@@ -42,19 +33,6 @@ function clearHistory() {
 </script>
 
 <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-  <!-- Header Section -->
-  <div class="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <div class="flex items-center gap-4">
-      <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100">
-        <Fingerprint size={24} />
-      </div>
-      <div>
-        <h1 class="text-2xl font-bold tracking-tight text-neutral-900">UUID Generator</h1>
-        <p class="text-sm text-neutral-500 font-medium">Generate and validate RFC 4122 UUIDs (v4)</p>
-      </div>
-    </div>
-  </div>
-
   <div class="grid gap-8 lg:grid-cols-3">
     <!-- Main Generator & Validator (Left 2/3) -->
     <div class="lg:col-span-2 space-y-6">

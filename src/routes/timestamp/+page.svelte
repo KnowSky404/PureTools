@@ -188,19 +188,6 @@ function isInRange(value: number, min: number, max: number): boolean {
 </script>
 
 <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-  <!-- Header Section -->
-  <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <div class="flex items-center gap-4">
-      <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 ring-1 ring-orange-100">
-        <Clock size={24} />
-      </div>
-      <div>
-        <h1 class="text-2xl font-bold tracking-tight text-neutral-900">Timestamp Tool</h1>
-        <p class="text-sm text-neutral-500 font-medium">Validate and convert timestamps instantly</p>
-      </div>
-    </div>
-  </div>
-
   <div class="grid gap-8 lg:grid-cols-2">
     <!-- Timestamp to Date -->
     <section class="flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition-shadow hover:shadow-md">
