@@ -165,3 +165,4 @@ SQL Format
 新增需求设计：随机姓名生成器，支持美国、中国、日本、韩国四个国家。
 设计范围：支持 `random` / `male` / `female` 性别筛选、批量生成、本地顺序与英文顺序切换、完整姓名与姓/名拆分展示。
 实现约束：采用纯前端内置轻量词库，不引入外部 API 或远程数据源，后续按 spec 进入实现。
+新增计划：随机姓名生成器 implementation plan 已写入 `docs/superpowers/plans/2026-04-13-random-name-generator.md`，后续按 TDD 顺序执行。
