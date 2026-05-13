@@ -473,8 +473,9 @@ function escapeRegexLiteral(value: string): string {
 
       <div class="space-y-6 p-6">
         <div class="space-y-2">
-          <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Pattern</label>
+          <label for="regex-pattern" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Pattern</label>
           <input
+            id="regex-pattern"
             type="text"
             bind:value={patternInput}
             placeholder="e.g. ^\\w+$"
@@ -511,8 +512,9 @@ function escapeRegexLiteral(value: string): string {
         </div>
 
         <div class="space-y-2">
-          <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Test Text</label>
+          <label for="regex-test-text" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Test Text</label>
           <textarea
+            id="regex-test-text"
             rows={6}
             bind:value={testInput}
             placeholder="Paste or type text to test..."
@@ -646,8 +648,9 @@ function escapeRegexLiteral(value: string): string {
         <div class="space-y-4">
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="space-y-2">
-              <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Prefix</label>
+              <label for="regex-builder-prefix" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Prefix</label>
               <input
+                id="regex-builder-prefix"
                 type="text"
                 bind:value={builderPrefix}
                 placeholder="Literal prefix"
@@ -655,8 +658,9 @@ function escapeRegexLiteral(value: string): string {
               />
             </div>
             <div class="space-y-2">
-              <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Suffix</label>
+              <label for="regex-builder-suffix" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Suffix</label>
               <input
+                id="regex-builder-suffix"
                 type="text"
                 bind:value={builderSuffix}
                 placeholder="Literal suffix"
@@ -667,8 +671,9 @@ function escapeRegexLiteral(value: string): string {
 
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="space-y-2">
-              <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Character Set</label>
+              <label for="regex-builder-character-set" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Character Set</label>
               <select
+                id="regex-builder-character-set"
                 bind:value={builderCharSet}
                 class="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm text-neutral-800 outline-none transition focus:border-rose-400 focus:bg-white focus:ring-4 focus:ring-rose-500/10"
               >
@@ -684,8 +689,9 @@ function escapeRegexLiteral(value: string): string {
             </div>
             {#if builderCharSet === "custom"}
               <div class="space-y-2">
-                <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Custom Class</label>
+                <label for="regex-builder-custom-class" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Custom Class</label>
                 <input
+                  id="regex-builder-custom-class"
                   type="text"
                   bind:value={builderCustomSet}
                   placeholder="e.g. a-z0-9_-"
@@ -697,8 +703,9 @@ function escapeRegexLiteral(value: string): string {
 
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="space-y-2">
-              <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Quantifier</label>
+              <label for="regex-builder-quantifier" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Quantifier</label>
               <select
+                id="regex-builder-quantifier"
                 bind:value={builderQuantifier}
                 class="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm text-neutral-800 outline-none transition focus:border-rose-400 focus:bg-white focus:ring-4 focus:ring-rose-500/10"
               >
@@ -711,33 +718,38 @@ function escapeRegexLiteral(value: string): string {
             </div>
             <div class="space-y-2">
               {#if builderQuantifier === "exact"}
-                <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Exact Length</label>
+                <label for="regex-builder-exact-length" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Exact Length</label>
                 <input
+                  id="regex-builder-exact-length"
                   type="text"
                   inputmode="numeric"
                   bind:value={builderExact}
                   class="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm text-neutral-800 outline-none transition focus:border-rose-400 focus:bg-white focus:ring-4 focus:ring-rose-500/10"
                 />
               {:else if builderQuantifier === "range"}
-                <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Min / Max</label>
+                <div class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Min / Max</div>
                 <div class="grid grid-cols-2 gap-2">
                   <input
+                    id="regex-builder-min-length"
                     type="text"
                     inputmode="numeric"
                     bind:value={builderMin}
+                    aria-label="Minimum length"
                     placeholder="Min"
                     class="w-full rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm text-neutral-800 outline-none transition focus:border-rose-400 focus:bg-white focus:ring-4 focus:ring-rose-500/10"
                   />
                   <input
+                    id="regex-builder-max-length"
                     type="text"
                     inputmode="numeric"
                     bind:value={builderMax}
+                    aria-label="Maximum length"
                     placeholder="Max"
                     class="w-full rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm text-neutral-800 outline-none transition focus:border-rose-400 focus:bg-white focus:ring-4 focus:ring-rose-500/10"
                   />
                 </div>
               {:else}
-                <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Length</label>
+                <div class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Length</div>
                 <div class="rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm text-neutral-500">
                   No length needed
                 </div>
@@ -773,8 +785,9 @@ function escapeRegexLiteral(value: string): string {
           </div>
 
           <div class="space-y-2">
-            <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Sample Text (Optional)</label>
+            <label for="regex-builder-sample" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Sample Text (Optional)</label>
             <input
+              id="regex-builder-sample"
               type="text"
               bind:value={builderExample}
               placeholder="Optional sample to send to validator"
@@ -783,7 +796,7 @@ function escapeRegexLiteral(value: string): string {
           </div>
 
           <div class="space-y-2">
-            <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Generated Regex</label>
+            <div class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Generated Regex</div>
             <div class="flex flex-wrap items-center gap-2 rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 font-mono text-xs text-neutral-700">
               <span class="break-all">{generatedOutput.display || "/pattern/flags"}</span>
               <button

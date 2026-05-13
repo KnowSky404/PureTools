@@ -118,6 +118,10 @@ SQL Format
 更新：引入 `lucide-svelte` 图标库，全面重构 UI/UX。
 更新：首页重构，采用更现代的 Hero 区域、功能卡片展示与 Lucide 图标。
 更新：全局布局优化，添加固定 Header（含搜索占位符与 GitHub 入口）与简洁 Footer。
+
+## 20260513
+
+修复：Cron 与 Regex 工具页补充表单标签关联，消除 `svelte-check` 的 a11y label 警告。
 更新：所有工具页（UUID、JSON、SQL、Timestamp、GitHub CDN）样式对齐，采用统一的卡片布局、操作栏与状态反馈，大幅提升视觉精致度与易用性。
 配置：`GEMINI.md` 明确规定项目必须使用 `pnpm` 且禁止使用其他包管理器。
 ## 20260228

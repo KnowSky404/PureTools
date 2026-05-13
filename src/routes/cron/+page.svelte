@@ -386,8 +386,9 @@ function applyPreset(preset: Preset): void {
 
       <div class="space-y-6 p-6">
         <div class="space-y-2">
-          <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Expression</label>
+          <label for="cron-expression" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Expression</label>
           <input
+            id="cron-expression"
             type="text"
             bind:value={cronInput}
             placeholder="*/5 * * * *"
@@ -464,8 +465,9 @@ function applyPreset(preset: Preset): void {
 
       <div class="space-y-6 p-6">
         <div class="space-y-2">
-          <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Schedule Type</label>
+          <label for="cron-schedule-type" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Schedule Type</label>
           <select
+            id="cron-schedule-type"
             bind:value={scheduleType}
             class="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm text-neutral-800 outline-none transition focus:border-cyan-400 focus:bg-white focus:ring-4 focus:ring-cyan-500/10"
           >
@@ -482,8 +484,9 @@ function applyPreset(preset: Preset): void {
 
         {#if scheduleType === "everyNMinutes"}
           <div class="space-y-2">
-            <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Every N Minutes</label>
+            <label for="cron-every-minutes" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Every N Minutes</label>
             <input
+              id="cron-every-minutes"
               type="text"
               inputmode="numeric"
               bind:value={everyMinutes}
@@ -497,8 +500,9 @@ function applyPreset(preset: Preset): void {
 
         {#if scheduleType === "everyNHours"}
           <div class="space-y-2">
-            <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Every N Hours</label>
+            <label for="cron-every-hours" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Every N Hours</label>
             <input
+              id="cron-every-hours"
               type="text"
               inputmode="numeric"
               bind:value={everyHours}
@@ -513,8 +517,9 @@ function applyPreset(preset: Preset): void {
         {#if scheduleType === "daily"}
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="space-y-2">
-              <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Hour (0-23)</label>
+              <label for="cron-daily-hour" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Hour (0-23)</label>
               <input
+                id="cron-daily-hour"
                 type="text"
                 inputmode="numeric"
                 bind:value={dailyHour}
@@ -525,8 +530,9 @@ function applyPreset(preset: Preset): void {
               {/if}
             </div>
             <div class="space-y-2">
-              <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Minute (0-59)</label>
+              <label for="cron-daily-minute" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Minute (0-59)</label>
               <input
+                id="cron-daily-minute"
                 type="text"
                 inputmode="numeric"
                 bind:value={dailyMinute}
@@ -542,8 +548,9 @@ function applyPreset(preset: Preset): void {
         {#if scheduleType === "weekly"}
           <div class="space-y-4">
             <div class="space-y-2">
-              <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Weekday</label>
+              <label for="cron-weekly-day" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Weekday</label>
               <select
+                id="cron-weekly-day"
                 bind:value={weeklyDay}
                 class="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm text-neutral-800 outline-none transition focus:border-cyan-400 focus:bg-white focus:ring-4 focus:ring-cyan-500/10"
               >
@@ -554,8 +561,9 @@ function applyPreset(preset: Preset): void {
             </div>
             <div class="grid gap-4 sm:grid-cols-2">
               <div class="space-y-2">
-                <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Hour (0-23)</label>
+                <label for="cron-weekly-hour" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Hour (0-23)</label>
                 <input
+                  id="cron-weekly-hour"
                   type="text"
                   inputmode="numeric"
                   bind:value={weeklyHour}
@@ -566,8 +574,9 @@ function applyPreset(preset: Preset): void {
                 {/if}
               </div>
               <div class="space-y-2">
-                <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Minute (0-59)</label>
+                <label for="cron-weekly-minute" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Minute (0-59)</label>
                 <input
+                  id="cron-weekly-minute"
                   type="text"
                   inputmode="numeric"
                   bind:value={weeklyMinute}
@@ -584,8 +593,9 @@ function applyPreset(preset: Preset): void {
         {#if scheduleType === "monthly"}
           <div class="space-y-4">
             <div class="space-y-2">
-              <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Day of Month (1-31)</label>
+              <label for="cron-monthly-day" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Day of Month (1-31)</label>
               <input
+                id="cron-monthly-day"
                 type="text"
                 inputmode="numeric"
                 bind:value={monthlyDay}
@@ -597,8 +607,9 @@ function applyPreset(preset: Preset): void {
             </div>
             <div class="grid gap-4 sm:grid-cols-2">
               <div class="space-y-2">
-                <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Hour (0-23)</label>
+                <label for="cron-monthly-hour" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Hour (0-23)</label>
                 <input
+                  id="cron-monthly-hour"
                   type="text"
                   inputmode="numeric"
                   bind:value={monthlyHour}
@@ -609,8 +620,9 @@ function applyPreset(preset: Preset): void {
                 {/if}
               </div>
               <div class="space-y-2">
-                <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Minute (0-59)</label>
+                <label for="cron-monthly-minute" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Minute (0-59)</label>
                 <input
+                  id="cron-monthly-minute"
                   type="text"
                   inputmode="numeric"
                   bind:value={monthlyMinute}
@@ -628,40 +640,45 @@ function applyPreset(preset: Preset): void {
           <div class="space-y-4">
             <div class="grid gap-4 sm:grid-cols-2">
               <div class="space-y-2">
-                <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Minute</label>
+                <label for="cron-advanced-minute" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Minute</label>
                 <input
+                  id="cron-advanced-minute"
                   type="text"
                   bind:value={advancedMinute}
                   class="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm font-mono text-neutral-800 outline-none transition focus:border-cyan-400 focus:bg-white focus:ring-4 focus:ring-cyan-500/10"
                 />
               </div>
               <div class="space-y-2">
-                <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Hour</label>
+                <label for="cron-advanced-hour" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Hour</label>
                 <input
+                  id="cron-advanced-hour"
                   type="text"
                   bind:value={advancedHour}
                   class="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm font-mono text-neutral-800 outline-none transition focus:border-cyan-400 focus:bg-white focus:ring-4 focus:ring-cyan-500/10"
                 />
               </div>
               <div class="space-y-2">
-                <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Day</label>
+                <label for="cron-advanced-day" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Day</label>
                 <input
+                  id="cron-advanced-day"
                   type="text"
                   bind:value={advancedDay}
                   class="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm font-mono text-neutral-800 outline-none transition focus:border-cyan-400 focus:bg-white focus:ring-4 focus:ring-cyan-500/10"
                 />
               </div>
               <div class="space-y-2">
-                <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Month</label>
+                <label for="cron-advanced-month" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Month</label>
                 <input
+                  id="cron-advanced-month"
                   type="text"
                   bind:value={advancedMonth}
                   class="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm font-mono text-neutral-800 outline-none transition focus:border-cyan-400 focus:bg-white focus:ring-4 focus:ring-cyan-500/10"
                 />
               </div>
               <div class="space-y-2">
-                <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Weekday</label>
+                <label for="cron-advanced-weekday" class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Weekday</label>
                 <input
+                  id="cron-advanced-weekday"
                   type="text"
                   bind:value={advancedWeekday}
                   class="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm font-mono text-neutral-800 outline-none transition focus:border-cyan-400 focus:bg-white focus:ring-4 focus:ring-cyan-500/10"
@@ -672,7 +689,7 @@ function applyPreset(preset: Preset): void {
         {/if}
 
         <div class="space-y-2">
-          <label class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Generated Expression</label>
+          <div class="text-xs font-semibold uppercase tracking-wider text-neutral-500">Generated Expression</div>
           <div class="flex flex-wrap items-center gap-2 rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 font-mono text-xs text-neutral-700">
             <span class="break-all">{generatedExpression}</span>
             <button
