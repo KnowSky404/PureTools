@@ -180,3 +180,4 @@ SQL Format
 
 新增：HTML Previewer 工具页，支持粘贴静态 HTML 并通过 sandbox iframe 本地预览渲染效果。
 更新：首页与导航新增 HTML Previewer 入口，归入 Formatters 分类。
+修正：HTML Previewer 默认示例替换为虚构订单表，避免示例中包含敏感业务字段或真实样式数据。

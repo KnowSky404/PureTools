@@ -5,21 +5,29 @@ const exampleHtml = `<table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>month_id</th>
-      <th>user_id</th>
-      <th>device_number</th>
-      <th>call_nums</th>
-      <th>call_duration</th>
+      <th>order_id</th>
+      <th>customer</th>
+      <th>region</th>
+      <th>items</th>
+      <th>total</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>11</th>
-      <td>202512</td>
-      <td>8423071478760909</td>
-      <td>02968084756</td>
-      <td>67.000000000000000000</td>
-      <td>10.533333333200000000</td>
+      <th>1</th>
+      <td>ORD-1001</td>
+      <td>Alice</td>
+      <td>North</td>
+      <td>3</td>
+      <td>$128.50</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>ORD-1002</td>
+      <td>Bob</td>
+      <td>West</td>
+      <td>1</td>
+      <td>$42.00</td>
     </tr>
   </tbody>
 </table>`;
