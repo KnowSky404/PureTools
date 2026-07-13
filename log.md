@@ -194,3 +194,4 @@ SQL Format
 新增：使用生图模型设计 PureTools 品牌 Logo，提交高清生成原件、网站生产版图标与完整生成/精修提示词。
 更新：顶部导航改用新品牌 Logo，替换默认 Svelte favicon，并补充 PNG、ICO 与 Apple Touch Icon。
 更新：中英文 README 展示新 Logo，并增加品牌原件与提示词入口。
+修复：首页补齐显式 Tailwind 暗色变体，并将工具卡片动画限定为边框与阴影，避免主题切换时出现短暂的浅色背景与浅色文字叠加。
