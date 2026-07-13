@@ -2,7 +2,6 @@
 import "./layout.css";
 import { ChevronDown, Github, MoonStar, Search, Sun, SunMoon, X } from "lucide-svelte";
 import { page } from "$app/state";
-import favicon from "$lib/assets/favicon.svg";
 import { type Tool, toolCategories, tools } from "$lib/utils/tools";
 
 const { children } = $props();
@@ -181,7 +180,9 @@ function isTypingTarget(target: EventTarget | null): boolean {
 </script>
 
 <svelte:head>
-  <link rel="icon" href={favicon} />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" href="/favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <title>PureTools | Lightweight Developer Toolset</title>
 </svelte:head>
 
@@ -190,10 +191,14 @@ function isTypingTarget(target: EventTarget | null): boolean {
   <header class="sticky top-0 z-50 border-b border-neutral-200 bg-white/80 backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-950/80">
     <div class="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
       <div class="relative flex items-center gap-4" bind:this={toolsMenu}>
-        <a href="/" class="flex items-center gap-2 group">
-          <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white shadow-sm transition-transform group-hover:scale-105">
-            <span class="font-bold text-lg">P</span>
-          </div>
+        <a href="/" class="group flex items-center gap-2" aria-label="PureTools home">
+          <img
+            src="/brand/puretools-logo.png"
+            alt=""
+            width="32"
+            height="32"
+            class="h-8 w-8 transition-transform group-hover:scale-105"
+          />
           <span class="hidden font-bold tracking-tight text-neutral-900 sm:inline-block">PureTools</span>
         </a>
 

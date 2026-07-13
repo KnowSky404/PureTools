@@ -1,4 +1,8 @@
-# PureTools
+<p align="center">
+  <img src="static/brand/puretools-logo.png" alt="PureTools Logo" width="128" height="128">
+</p>
+
+<h1 align="center">PureTools</h1>
 
 中文 | [English](README.md)
 
@@ -64,6 +68,13 @@ bun run dev
 ## 说明
 
 - 所有工具均在浏览器本地运行，不会上传任何数据。
+
+## 品牌资源
+
+- [生图高清原件](static/brand/puretools-logo-original.png)
+- [网站生产版 Logo](static/brand/puretools-logo.png)
+- [初始生图提示词](docs/brand/puretools-logo-prompt.txt)
+- [精修提示词](docs/brand/puretools-logo-refinement-prompt.txt)
 
 ## 许可证
 

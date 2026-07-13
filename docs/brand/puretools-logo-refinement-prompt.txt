@@ -1,0 +1,14 @@
+Use case: precise-object-edit
+Asset type: final production master for the PureTools logo, website header icon, README identity, and favicon
+Primary request: Change only the rendering treatment of Image 1. Preserve the exact logo geometry, layout, proportions, negative space, abstract P silhouette, tool tile, hexagonal accent, and code brackets. Convert the artwork into a strictly flat vector-style logo with exact solid color fills.
+Input images: Image 1 is the edit target and approved geometric logo concept
+Scene/backdrop: exact solid near-white #FAFAFA outer canvas; exact solid deep-indigo #4F46E5 rounded-square field
+Subject: preserve every shape and its current position; keep the large abstract P and tool rail near-white #FAFAFA; keep the small central hexagon electric cyan #22D3EE
+Style/medium: pristine flat vector-style brand artwork rendered as a high-resolution raster, with crisp antialiased edges
+Composition/framing: unchanged from Image 1
+Lighting/mood: no lighting effects; completely flat graphic design
+Color palette: use only #FAFAFA, #4F46E5, and #22D3EE; no tonal variations
+Materials/textures: solid fills only
+Text: no text
+Constraints: change only color treatment and surface rendering; preserve the exact geometry and spacing; remove every gradient, glow, shadow, highlight, bevel, blur, texture, noise, and three-dimensional effect; retain sharp, clean edges and favicon legibility
+Avoid: redesigning, moving, adding, or deleting shapes; gradients; shadows; glow; 3D; glass effects; mockup presentation; perspective; texture; noise; border frames; watermark; signature; text

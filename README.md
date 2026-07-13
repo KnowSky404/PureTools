@@ -1,4 +1,8 @@
-# PureTools
+<p align="center">
+  <img src="static/brand/puretools-logo.png" alt="PureTools logo" width="128" height="128">
+</p>
+
+<h1 align="center">PureTools</h1>
 
 English | [中文](README.zh-CN.md)
 
@@ -64,6 +68,13 @@ bun run dev
 ## Notes
 
 - All tools run locally in the browser; no data is sent to any server.
+
+## Brand Assets
+
+- [Generated high-resolution logo original](static/brand/puretools-logo-original.png)
+- [Production logo](static/brand/puretools-logo.png)
+- [Generation prompt](docs/brand/puretools-logo-prompt.txt)
+- [Refinement prompt](docs/brand/puretools-logo-refinement-prompt.txt)
 
 ## License
 

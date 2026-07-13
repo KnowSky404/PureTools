@@ -1,0 +1,12 @@
+Use case: logo-brand
+Asset type: primary brand mark, website header icon, README identity, and favicon for PureTools
+Primary request: Design a distinctive square logo mark for PureTools, a lightweight, privacy-first, browser-only toolkit for developers. Create an abstract P-shaped monogram from a precise vertical tool rail, one compact modular tool tile, and a pair of opposing developer code brackets integrated through negative space. The result should communicate purity, speed, modular tools, and local browser processing without looking like a generic code editor icon.
+Scene/backdrop: a clean square app-icon canvas with a solid near-white outer background and one centered deep-indigo rounded-square field
+Subject: one bold geometric symbol, centered; the abstract P must be recognizable through silhouette and negative space rather than typeset lettering
+Style/medium: flat vector-style brand design rendered as a pristine high-resolution raster; rigorous grid geometry; crisp edges; minimal and contemporary
+Composition/framing: perfectly centered and optically balanced; the indigo field fills about 88 percent of the canvas with a restrained corner radius; the symbol fills about 62 percent of the field; generous even padding; strong silhouette that remains legible at 16, 24, and 32 pixels
+Color palette: solid deep indigo #4F46E5, near-white #FAFAFA, and one small electric-cyan #22D3EE accent only; high contrast; no additional colors
+Materials/textures: completely flat solid fills with clean antialiased edges
+Text: no words, no letters rendered as typography, no slogan
+Constraints: square 1:1 composition; original and ownable visual identity; favicon-ready; balanced negative space; no element may touch the canvas edge; keep all geometry simple enough for future vector tracing
+Avoid: gradients, shadows, glow, 3D, glass effects, mockup presentation, perspective, texture, noise, thin strokes, tiny details, busy circuitry, generic wrench or gear symbols, duplicate icons, border frames, watermarks, signatures, and any text
