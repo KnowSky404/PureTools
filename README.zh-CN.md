@@ -21,6 +21,7 @@ PureTools 是一个轻量、隐私优先、纯前端的开发者工具集网站�
 - CRON 工具：5 字段表达式校验与生成
 - Base64 工具：编码/解码、URL Safe 模式
 - URL 编码：编码/解码（Component / Full URL）
+- 二维码生成器：将原始文本生成二维码并下载 PNG
 - JWT 解码：Header/Payload 解析、时间字段提示
 - Hash 工具：SHA-1/256/384/512（Web Crypto）
 - 时间戳工具：时间戳 <-> 本地时间，秒/毫秒，本地/UTC 输出、复制

@@ -21,6 +21,7 @@ PureTools is a lightweight, privacy-first, pure-frontend toolkit for developers.
 - CRON Tool: 5-field CRON validator and generator
 - Base64 Tool: encode/decode, URL-safe mode
 - URL Encoder: encode/decode (component/full URL)
+- QR Code Generator: generate and download QR codes from exact plain-text input
 - JWT Decoder: header/payload decode, time claim insights
 - Hash Tool: SHA-1/256/384/512 via Web Crypto
 - Timestamp Tool: timestamp <-> local datetime, seconds/milliseconds, local + UTC outputs, copy
