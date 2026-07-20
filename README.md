@@ -6,7 +6,7 @@
 
 English | [中文](README.zh-CN.md)
 
-PureTools is a lightweight, privacy-first, pure-frontend toolkit for developers. All processing happens locally in the browser with zero backend dependencies.
+PureTools is a lightweight, privacy-first, pure-frontend toolkit for developers. Core processing happens locally in the browser with no application backend; individual tools may read clearly identified public reference data.
 
 ## Highlights
 
@@ -31,6 +31,7 @@ PureTools is a lightweight, privacy-first, pure-frontend toolkit for developers.
 - Hash Tool: SHA-1/256/384/512 via Web Crypto
 - Timestamp Tool: timestamp <-> local datetime, seconds/milliseconds, local + UTC outputs, copy
 - GitHub CDN: convert GitHub/raw links to raw + jsDelivr URLs, copy
+- Reference exchange rates: read public reference rates while keeping amounts, conversion, and caching local
 
 ## Tech Stack
 
@@ -59,6 +60,10 @@ bun run dev
 - `bun run dev`: start dev server
 - `bun run build`: build for production
 - `bun run preview`: preview production build
+- `bun run test`: run unit and browser end-to-end tests
+- `bun run test:unit`: run Bun unit tests
+- `bun run test:e2e`: run Playwright browser tests
+- `bun run test:exchange-rate:live`: verify the live rate API, CORS policy, and response contract
 - `bun run check`: type-check and sync
 - `bun run lint`: lint + type-check
 - `bun run lint:fix`: auto-fix lint issues
@@ -68,9 +73,11 @@ bun run dev
 
 ## Notes
 
-- All tools run locally in the browser; no data is sent to any server.
+- Core processing runs locally in the browser and user input is not uploaded; the exchange-rate tool only downloads a public rate table.
 - Local Translator requires desktop Chrome 138 or later. Translation models are downloaded and
   managed by Chrome on demand.
+- Playwright uses the bundled Chromium binary on Linux. On macOS or Windows, run
+  `bunx playwright install chromium` once before `bun run test:e2e`.
 
 ## Brand Assets
 

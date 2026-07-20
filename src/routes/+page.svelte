@@ -3,7 +3,7 @@ import { ChevronRight, Globe, ShieldCheck, Zap } from "lucide-svelte";
 import { tools } from "$lib/utils/tools";
 
 const features = [
-  { icon: Zap, title: "Pure Frontend", desc: "No backend, everything runs in your browser." },
+  { icon: Zap, title: "Client-side", desc: "Core processing runs directly in your browser." },
   { icon: ShieldCheck, title: "Privacy First", desc: "Your data never leaves your computer." },
   { icon: Globe, title: "Lightweight", desc: "Minimal dependencies for maximum performance." },
 ];
@@ -20,7 +20,7 @@ const features = [
       Essential tools for <span class="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">Modern Developers</span>
     </h1>
     <p class="mx-auto mt-6 max-w-2xl text-lg text-neutral-500 dark:text-neutral-400">
-      Fast, private, and lightweight. A collection of essential tools built for the modern web developer, running entirely in your browser.
+			Fast, private, and lightweight. Essential tools with core processing that runs directly in your browser.
     </p>
   </div>
 
