@@ -66,7 +66,10 @@ const canTranslate = $derived(
     (sourceLanguage !== "auto" || detectionSupported),
 );
 const canSwap = $derived(
-  output !== "" && !isBusy && (sourceLanguage !== "auto" || detectedLanguage !== null),
+  output !== "" &&
+    !resultChanged &&
+    !isBusy &&
+    (sourceLanguage !== "auto" || detectedLanguage !== null),
 );
 
 $effect(() => {
