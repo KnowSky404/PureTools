@@ -59,7 +59,12 @@ const directRate = $derived(
 );
 
 $effect(() => {
-  const cached = parseCachedSnapshot(window.localStorage.getItem(EXCHANGE_RATE_CACHE_KEY));
+  let cached: ExchangeRateSnapshot | null = null;
+  try {
+    cached = parseCachedSnapshot(window.localStorage.getItem(EXCHANGE_RATE_CACHE_KEY));
+  } catch {
+    // Storage restrictions must not prevent the public rate request from running.
+  }
   if (cached) {
     snapshot = cached;
     status = "cached";

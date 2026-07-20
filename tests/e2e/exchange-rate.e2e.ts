@@ -72,4 +72,21 @@ test("converts locally, swaps currencies, and falls back to cached rates", async
   await expect(page.getByText(/HTTP 503.*Using the last saved snapshot/)).toBeVisible();
   await expect(page.getByText("1 USD = 0.8 EUR")).toBeVisible();
   await expect(page.getByText("€0.80", { exact: true })).toBeVisible();
+
+  await page.evaluate(() => {
+    window.localStorage.removeItem("rate-provider-mode");
+  });
+  await page.addInitScript(() => {
+    const originalGetItem = Storage.prototype.getItem;
+    Storage.prototype.getItem = function (key: string): string | null {
+      if (key === "puretools:exchange-rates:v1") {
+        throw new DOMException("Storage access is blocked.", "SecurityError");
+      }
+      return originalGetItem.call(this, key);
+    };
+  });
+  await page.reload();
+
+  await expect(page.getByText("Rate date").locator("..").getByText("2026-07-20")).toBeVisible();
+  await expect(page.getByText("1 USD = 0.83333333 EUR")).toBeVisible();
 });
