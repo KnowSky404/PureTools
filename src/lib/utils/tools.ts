@@ -9,6 +9,7 @@ import {
   Fingerprint,
   Hash,
   KeyRound,
+  Languages,
   Link2,
   QrCode,
   Shuffle,
@@ -19,6 +20,7 @@ import {
 export const toolCategories = [
   "Identifiers",
   "Formatters",
+  "Text",
   "Patterns",
   "Encoding",
   "Security",
@@ -99,6 +101,16 @@ export const tools: Tool[] = [
     hoverColor: "group-hover:bg-violet-600 group-hover:text-white",
     category: "Formatters",
     keywords: ["html", "preview", "render", "table", "markup"],
+  },
+  {
+    name: "Local Translator",
+    description: "Translate text privately with Chrome's on-device AI",
+    icon: Languages,
+    href: "/translator",
+    color: "bg-cyan-50 text-cyan-600 border-cyan-100",
+    hoverColor: "group-hover:bg-cyan-600 group-hover:text-white",
+    category: "Text",
+    keywords: ["translate", "translator", "language", "local", "private", "chrome", "ai"],
   },
   {
     name: "Regex Tool",

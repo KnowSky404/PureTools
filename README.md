@@ -21,6 +21,7 @@ PureTools is a lightweight, privacy-first, pure-frontend toolkit for developers.
 - Random String Generator: email-prefix-friendly presets, batch generation, copy, history
 - JSON Formatter: format, minify, validate, escape/unescape, syntax highlight, line numbers, copy
 - SQL Formatter: format/minify, basic validation (strings/parentheses), line numbers, copy
+- Local Translator: private on-device translation with language detection and model download progress
 - Regex Tool: validate, test, highlight matches, generator templates
 - CRON Tool: 5-field CRON validator and generator
 - Base64 Tool: encode/decode, URL-safe mode
@@ -68,6 +69,8 @@ bun run dev
 ## Notes
 
 - All tools run locally in the browser; no data is sent to any server.
+- Local Translator requires desktop Chrome 138 or later. Translation models are downloaded and
+  managed by Chrome on demand.
 
 ## Brand Assets
 

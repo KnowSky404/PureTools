@@ -195,3 +195,8 @@ SQL Format
 更新：顶部导航改用新品牌 Logo，替换默认 Svelte favicon，并补充 PNG、ICO 与 Apple Touch Icon。
 更新：中英文 README 展示新 Logo，并增加品牌原件与提示词入口。
 修复：首页补齐显式 Tailwind 暗色变体，并将工具卡片动画限定为边框与阴影，避免主题切换时出现短暂的浅色背景与浅色文字叠加。
+
+## 20260719
+
+新增：本地翻译工具页，基于 Chrome Translator API 在浏览器端完成翻译，支持语言选择、自动识别、语言包下载进度、结果复制与语言互换。
+更新：首页与导航新增 Local Translator 入口并归入 Text 分类，同步中英文 README 和浏览器兼容性说明。
