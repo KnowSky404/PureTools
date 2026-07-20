@@ -6,7 +6,7 @@
 
 中文 | [English](README.md)
 
-PureTools 是一个轻量、隐私优先、纯前端的开发者工具集网站。所有处理都在浏览器本地完成，无任何后端依赖。
+PureTools 是一个轻量、隐私优先、纯前端的开发者工具集网站。核心处理都在浏览器本地完成，无业务后端依赖；个别工具会只读获取明确标注的公开参考数据。
 
 ## 亮点
 
@@ -31,6 +31,7 @@ PureTools 是一个轻量、隐私优先、纯前端的开发者工具集网站�
 - Hash 工具：SHA-1/256/384/512（Web Crypto）
 - 时间戳工具：时间戳 <-> 本地时间，秒/毫秒，本地/UTC 输出、复制
 - GitHub CDN：GitHub/raw 链接转换为 Raw + jsDelivr，支持复制
+- 参考汇率转换：只读获取公开参考汇率，金额换算与缓存均在浏览器本地完成
 
 ## 技术栈
 
@@ -59,6 +60,10 @@ bun run dev
 - `bun run dev`: 启动开发服务器
 - `bun run build`: 生产构建
 - `bun run preview`: 预览构建产物
+- `bun run test`: 运行单元测试与浏览器端到端测试
+- `bun run test:unit`: 运行 Bun 单元测试
+- `bun run test:e2e`: 运行 Playwright 浏览器测试
+- `bun run test:exchange-rate:live`: 检查真实汇率 API、CORS 策略与响应契约
 - `bun run check`: 类型检查与同步
 - `bun run lint`: Lint + 类型检查
 - `bun run lint:fix`: 自动修复 Lint
@@ -68,8 +73,10 @@ bun run dev
 
 ## 说明
 
-- 所有工具均在浏览器本地运行，不会上传任何数据。
+- 所有工具的核心处理均在浏览器本地运行，不会上传用户输入；参考汇率工具仅下载公开汇率表。
 - 本地翻译需要桌面版 Chrome 138 或更高版本，翻译模型由 Chrome 按需下载和管理。
+- Playwright 在 Linux 上使用项目内置 Chromium；macOS 或 Windows 首次运行前需执行
+  `bunx playwright install chromium`。
 
 ## 品牌资源
 

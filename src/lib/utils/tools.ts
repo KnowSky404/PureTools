@@ -1,5 +1,6 @@
 import {
   Asterisk,
+  BadgeDollarSign,
   Binary,
   Braces,
   Clock,
@@ -26,6 +27,7 @@ export const toolCategories = [
   "Security",
   "Time",
   "Delivery",
+  "Finance",
 ] as const;
 
 export type ToolCategory = (typeof toolCategories)[number];
@@ -211,5 +213,15 @@ export const tools: Tool[] = [
     hoverColor: "group-hover:bg-purple-600 group-hover:text-white",
     category: "Delivery",
     keywords: ["github", "cdn", "jsdelivr", "raw", "link"],
+  },
+  {
+    name: "Exchange Rate Converter",
+    description: "Convert currencies with cached public reference rates",
+    icon: BadgeDollarSign,
+    href: "/exchange-rate",
+    color: "bg-emerald-50 text-emerald-600 border-emerald-100",
+    hoverColor: "group-hover:bg-emerald-600 group-hover:text-white",
+    category: "Finance",
+    keywords: ["currency", "exchange", "rate", "forex", "money", "convert"],
   },
 ] as const;
