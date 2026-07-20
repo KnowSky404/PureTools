@@ -1,5 +1,6 @@
 export const EXCHANGE_RATE_API_URL = "https://api.frankfurter.dev/v1/latest?base=EUR";
 export const EXCHANGE_RATE_CACHE_KEY = "puretools:exchange-rates:v1";
+export const EXCHANGE_RATE_REQUEST_TIMEOUT_MS = 10_000;
 
 export const currencies = [
   { code: "AUD", name: "Australian Dollar" },
@@ -130,17 +131,46 @@ export function parseCachedSnapshot(value: string | null): ExchangeRateSnapshot 
 export async function fetchExchangeRates(
   signal?: AbortSignal,
   fetcher: typeof fetch = fetch,
+  timeoutMs = EXCHANGE_RATE_REQUEST_TIMEOUT_MS,
 ): Promise<ExchangeRateSnapshot> {
-  const response = await fetcher(EXCHANGE_RATE_API_URL, {
-    headers: { Accept: "application/json" },
-    signal,
-  });
-  if (!response.ok) {
-    throw new Error(`The rate provider returned HTTP ${response.status}.`);
+  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) {
+    throw new Error("The rate request timeout must be a positive number.");
   }
 
-  const body: unknown = await response.json();
-  return parseExchangeRateResponse(body);
+  const requestController = new AbortController();
+  const forwardCallerAbort = (): void => requestController.abort(signal?.reason);
+  if (signal?.aborted) {
+    forwardCallerAbort();
+  } else {
+    signal?.addEventListener("abort", forwardCallerAbort, { once: true });
+  }
+  const timeoutId = setTimeout(() => {
+    requestController.abort(new DOMException("The rate request timed out.", "TimeoutError"));
+  }, timeoutMs);
+
+  try {
+    const response = await fetcher(EXCHANGE_RATE_API_URL, {
+      headers: { Accept: "application/json" },
+      signal: requestController.signal,
+    });
+    if (!response.ok) {
+      throw new Error(`The rate provider returned HTTP ${response.status}.`);
+    }
+
+    const body: unknown = await response.json();
+    return parseExchangeRateResponse(body);
+  } catch (caughtError) {
+    if (
+      requestController.signal.reason instanceof DOMException &&
+      requestController.signal.reason.name === "TimeoutError"
+    ) {
+      throw new Error("The rate request timed out. Try again.");
+    }
+    throw caughtError;
+  } finally {
+    clearTimeout(timeoutId);
+    signal?.removeEventListener("abort", forwardCallerAbort);
+  }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
