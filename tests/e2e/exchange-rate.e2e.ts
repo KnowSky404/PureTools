@@ -15,8 +15,18 @@ test("converts locally, swaps currencies, and falls back to cached rates", async
     const originalFetch = window.fetch;
     window.fetch = async (input, init) => {
       if (String(input).startsWith("https://api.frankfurter.dev/v1/latest")) {
-        if (window.localStorage.getItem("rate-provider-mode") === "failure") {
+        const providerMode = window.localStorage.getItem("rate-provider-mode");
+        if (providerMode === "failure") {
           return new Response("Unavailable", { status: 503 });
+        }
+        if (providerMode === "hanging") {
+          return await new Promise<Response>((_resolve, reject) => {
+            init?.signal?.addEventListener(
+              "abort",
+              () => reject(init.signal instanceof AbortSignal ? init.signal.reason : undefined),
+              { once: true },
+            );
+          });
         }
         const requests = Number(window.sessionStorage.getItem("rate-provider-requests") ?? "0");
         window.sessionStorage.setItem("rate-provider-requests", String(requests + 1));
@@ -89,4 +99,20 @@ test("converts locally, swaps currencies, and falls back to cached rates", async
 
   await expect(page.getByText("Rate date").locator("..").getByText("2026-07-20")).toBeVisible();
   await expect(page.getByText("1 USD = 0.83333333 EUR")).toBeVisible();
+
+  await page.evaluate(() => {
+    window.localStorage.setItem("rate-provider-mode", "hanging");
+  });
+  await page.reload();
+
+  await expect(page.getByText("Could not refresh rates")).toBeVisible({ timeout: 12_000 });
+  await expect(page.getByText("The rate request timed out. Try again.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Refresh rates" })).toBeEnabled();
+  await page.screenshot({ path: "test-results/exchange-rate-timeout.png", fullPage: true });
+
+  await page.evaluate(() => {
+    window.localStorage.removeItem("rate-provider-mode");
+  });
+  await page.getByRole("button", { name: "Refresh rates" }).click();
+  await expect(page.getByText("Rate date").locator("..").getByText("2026-07-20")).toBeVisible();
 });

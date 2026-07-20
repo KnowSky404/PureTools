@@ -123,4 +123,59 @@ describe("fetchExchangeRates", () => {
 
     expect(message).toContain("invalid response");
   });
+
+  test("times out a provider request that never settles", async () => {
+    const fetcher: typeof fetch = async (_input, init) => {
+      return await new Promise<Response>((_resolve, reject) => {
+        init?.signal?.addEventListener(
+          "abort",
+          () => reject(init.signal instanceof AbortSignal ? init.signal.reason : undefined),
+          { once: true },
+        );
+      });
+    };
+
+    let message = "";
+    try {
+      await fetchExchangeRates(undefined, fetcher, 1);
+    } catch (error) {
+      message = error instanceof Error ? error.message : "";
+    }
+
+    expect(message).toBe("The rate request timed out. Try again.");
+  });
+
+  test("preserves caller cancellation instead of reporting a timeout", async () => {
+    const controller = new AbortController();
+    const fetcher: typeof fetch = async (_input, init) => {
+      return await new Promise<Response>((_resolve, reject) => {
+        init?.signal?.addEventListener(
+          "abort",
+          () => reject(init.signal instanceof AbortSignal ? init.signal.reason : undefined),
+          { once: true },
+        );
+        controller.abort();
+      });
+    };
+
+    let errorName = "";
+    try {
+      await fetchExchangeRates(controller.signal, fetcher, 1_000);
+    } catch (error) {
+      errorName = error instanceof DOMException ? error.name : "";
+    }
+
+    expect(errorName).toBe("AbortError");
+  });
+
+  test("rejects an invalid timeout before starting a request", async () => {
+    let message = "";
+    try {
+      await fetchExchangeRates(undefined, fetch, 0);
+    } catch (error) {
+      message = error instanceof Error ? error.message : "";
+    }
+
+    expect(message).toContain("positive number");
+  });
 });
