@@ -21,6 +21,7 @@ PureTools 是一个轻量、隐私优先、纯前端的开发者工具集网站�
 - 随机字符串生成器：适合邮箱前缀的预设、批量生成、复制、历史记录
 - JSON 格式化：格式化、压缩、校验、转义/反转义、语法高亮、行号、复制
 - SQL 格式化：格式化/压缩、基础校验（字符串/括号）、行号、复制
+- [Markdown 预览器](docs/markdown-preview.md)：在本地预览 CommonMark 或 Enhanced 模式的 GFM、数学公式、Mermaid 与受限静态 HTML
 - 本地翻译：使用 Chrome 端侧模型完成私密翻译，支持语言识别与模型下载进度
 - 正则工具：校验、测试、高亮匹配、模板生成
 - CRON 工具：5 字段表达式校验与生成
@@ -75,7 +76,7 @@ bun run dev
 
 - 所有工具的核心处理均在浏览器本地运行，不会上传用户输入；参考汇率工具仅下载公开汇率表。
 - 本地翻译需要桌面版 Chrome 138 或更高版本，翻译模型由 Chrome 按需下载和管理。
-- Playwright 在 Linux 上使用项目内置 Chromium；macOS 或 Windows 首次运行前需执行
+- Playwright 在 Linux x64 上使用项目内置 Chromium；Linux arm64/其他架构、macOS 和 Windows 使用 Playwright 原生浏览器，首次运行前需执行
   `bunx playwright install chromium`。
 
 ## 品牌资源

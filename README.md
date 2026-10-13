@@ -21,6 +21,7 @@ PureTools is a lightweight, privacy-first, pure-frontend toolkit for developers.
 - Random String Generator: email-prefix-friendly presets, batch generation, copy, history
 - JSON Formatter: format, minify, validate, escape/unescape, syntax highlight, line numbers, copy
 - SQL Formatter: format/minify, basic validation (strings/parentheses), line numbers, copy
+- [Markdown Previewer](docs/markdown-preview.md): local CommonMark or Enhanced preview with GFM, math, Mermaid, and safe static HTML
 - Local Translator: private on-device translation with language detection and model download progress
 - Regex Tool: validate, test, highlight matches, generator templates
 - CRON Tool: 5-field CRON validator and generator
@@ -76,8 +77,8 @@ bun run dev
 - Core processing runs locally in the browser and user input is not uploaded; the exchange-rate tool only downloads a public rate table.
 - Local Translator requires desktop Chrome 138 or later. Translation models are downloaded and
   managed by Chrome on demand.
-- Playwright uses the bundled Chromium binary on Linux. On macOS or Windows, run
-  `bunx playwright install chromium` once before `bun run test:e2e`.
+- Playwright uses the bundled Chromium binary on Linux x64. Linux arm64/other architectures, macOS, and Windows use Playwright's native browser installation; run
+  `bunx playwright install chromium` once before `bun run test:e2e` on those platforms.
 
 ## Brand Assets
 

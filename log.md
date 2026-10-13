@@ -213,3 +213,15 @@ SQL Format
 测试：新增真实汇率 API/CORS 独立健康检查，Playwright 在非 Linux 系统回退为标准浏览器并关闭不必要的并行。
 修复：浏览器策略禁用 localStorage 时忽略缓存读取异常，确保参考汇率网络请求仍会正常执行。
 修复：参考汇率请求增加 10 秒超时与可重试错误，避免首次访问时供应商请求挂起导致页面永久停留在加载状态。
+
+## 20261013
+
+新增需求：实现独立的 Markdown Previewer（`/markdown-preview`），支持 Enhanced 与 CommonMark 两种明确模式；Enhanced 覆盖 GFM、脚注、数学公式、Mermaid、提示块、Frontmatter 展示和受限静态 HTML，并保持所有解析与渲染在浏览器本地完成。
+实现记录：补充中英文 README 工具入口与 `docs/markdown-preview.md` 权威说明，记录当前 unified/remark/rehype、KaTeX、highlight.js、Mermaid 与 DOMPurify 版本，Mermaid 正常构建与实验/附加图表边界、资源限制、安全隔离和降级策略。
+安全边界：Markdown AST 解析、内容净化、KaTeX 输出与 Mermaid SVG 输出分阶段处理；Mermaid 生成使用独立的 `allow-scripts` 且无同源权限 iframe，生产构建使用 Vite `inlineDynamicImports` 生成的完整自包含 IIFE，并将 CSP `script-src` 固定到精确资源路径；开发环境 ESM 资源的 CORS 仅允许沙箱不透明 `null` origin；最终预览不开放脚本，仅为应用自带 KaTeX 字体保留 `allow-same-origin`；远程/相对图片、危险链接、脚本、事件属性、嵌入和用户 CSS 均受限或降级。
+边界补充：Mermaid 源码与引擎均限制单图 20,000 字符和 500 条边；完整 Mermaid 构建仍不承诺富 HTML label、foreignObject、图内数学、图标/图片包、自定义布局、回调、插件或外部图表注册能力；独立 Markdown KaTeX 数学公式仍受支持。复制失败时显示浏览器 Clipboard API/HTTPS 权限或手动复制提示。
+需求来源：https://microbin.knowsky.uk/raw/b42R1e。完成独立工具注册、双模式解析、GFM/脚注/五类提示块/Frontmatter、KaTeX、真实 Mermaid 图表、按需代码高亮、导入/复制/下载、深浅色与移动视图；源文仅存在当前页面内存，所有渲染保持浏览器本地执行。
+修复记录：SVG 净化后使用具有 SVG API 的解析节点保留图表实际尺寸与局部滚动；文档锚点（含单次、双重编码）映射到预览自身目标；BOM 源码偏移统一校正，保留货币文本、提示块与 Frontmatter 完整边界；Playwright 按 CPU 架构选择浏览器，并等待工具路由完成客户端挂载。
+最终验证：`bun run lint:fix`、`bun run check`、`bun run lint`、`bun run test:unit`、`bun run test:e2e`、`bun run build` 均通过；单元测试 60 项、246 次断言；Chromium 完整 14 项，最终生产构建上的 Firefox 与 WebKit Markdown 测试分别 13 项全部通过，包含 11 类 Mermaid 实际 SVG 与 CSP/请求安全验收。桌面 1440×1000、手机 390×844 截图正常，常规流程控制台无错误、手机横向溢出为 0；首页、JSON 与普通 Markdown 不下载 Mermaid/KaTeX 重资源。
+产物记录：客户端 JS 相对基线增加 5,991,794 字节，逐文件 gzip 增加 1,711,524 字节；完整 Mermaid 按需资源 5,193,475 字节（gzip 1,458,721 字节）。详细依赖、产物对比、初始失败及修复、已验证浏览器和限制见 `docs/markdown-preview.md`。
+验证环境：Ubuntu 24.04 arm64、Bun 1.4.3、Playwright 1.61.1，使用原生 Chromium 149、Firefox 151、WebKit 26.5。受限缓存/日志路径及 loopback 代理问题通过临时 `/tmp` 路径和同宿主测试解决；验收时串行运行构建与服务，未放宽应用安全策略。真实 Safari/iOS 与其他图表语法尚未逐项验收；Mermaid DOM 渲染的超时不能抢占同步计算，完整包首次加载成本仍较大。

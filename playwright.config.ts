@@ -1,7 +1,9 @@
 import { defineConfig } from "@playwright/test";
 import serverlessChromium from "@sparticuz/chromium";
 
-const useBundledChromium = process.platform === "linux";
+// The npm serverless package ships x64 binaries only. Other architectures use
+// Playwright's native browser installation, just like macOS and Windows.
+const useBundledChromium = process.platform === "linux" && process.arch === "x64";
 const executablePath = useBundledChromium ? await serverlessChromium.executablePath() : undefined;
 
 export default defineConfig({
