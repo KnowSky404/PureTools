@@ -225,3 +225,30 @@ SQL Format
 最终验证：`bun run lint:fix`、`bun run check`、`bun run lint`、`bun run test:unit`、`bun run test:e2e`、`bun run build` 均通过；单元测试 60 项、246 次断言；Chromium 完整 14 项，最终生产构建上的 Firefox 与 WebKit Markdown 测试分别 13 项全部通过，包含 11 类 Mermaid 实际 SVG 与 CSP/请求安全验收。桌面 1440×1000、手机 390×844 截图正常，常规流程控制台无错误、手机横向溢出为 0；首页、JSON 与普通 Markdown 不下载 Mermaid/KaTeX 重资源。
 产物记录：客户端 JS 相对基线增加 5,991,794 字节，逐文件 gzip 增加 1,711,524 字节；完整 Mermaid 按需资源 5,193,475 字节（gzip 1,458,721 字节）。详细依赖、产物对比、初始失败及修复、已验证浏览器和限制见 `docs/markdown-preview.md`。
 验证环境：Ubuntu 24.04 arm64、Bun 1.4.3、Playwright 1.61.1，使用原生 Chromium 149、Firefox 151、WebKit 26.5。受限缓存/日志路径及 loopback 代理问题通过临时 `/tmp` 路径和同宿主测试解决；验收时串行运行构建与服务，未放宽应用安全策略。真实 Safari/iOS 与其他图表语法尚未逐项验收；Mermaid DOM 渲染的超时不能抢占同步计算，完整包首次加载成本仍较大。
+
+
+## 20261021
+
+需求来源：https://microbin.knowsky.uk/raw/dw08Xe。扩展现有 `/hash` 为统一的 Hash Calculator & Verifier，增加 MD5 文本/文件、全部现有 SHA 算法的文件支持、单文件选择/拖拽、完整性核对、进度、取消与清除；保持 SHA-256 默认值，不新增 `/md5` 路由。
+
+实现：文本保留原始 UTF-8 字节、空格与换行，非空输入使用 250 ms 防抖，空字符串通过 Calculate 显式计算；SHA 文本继续使用 Web Crypto，MD5 文本按需加载引擎。文件以 Blob.slice 顺序读取最多 4 MiB 的分块，在独立 Worker 内连续增量更新，支持二进制与 0 字节文件，文件名不参与计算。完成、失败、取消、切换输入/算法以及页面卸载均终止对应 Worker；任务编号同时阻止过期进度、结果和错误覆盖新状态，清理防抖及复制反馈计时器。
+
+校验与界面：预期值按当前算法检查十六进制长度，比较前去除首尾空白且忽略大小写，区分 Match、Mismatch、Invalid checksum 和等待计算；更改预期值不重新计算文件。复用 Clipboard 封装并报告实际复制失败，保留文本 Swap，补充无障碍标签、深浅色、移动布局、隐私说明与 MD5 碰撞风险提示，推荐 SHA-256。工具描述和搜索关键词覆盖 md5、hash、checksum、sha256、file hash。
+
+依赖评估：固定新增 hash-wasm 4.12.0（npm 当前版本，MIT，零运行时依赖；下载包解压约 1.80 MB），使用同一实现提供 MD5 和增量 SHA，引擎的 WASM 内嵌在本地产物中。随站点提供 static/licenses/hash-wasm.txt 原始许可证与版权声明；不引入运行时 CDN 或计算 API。Vite 的 Mermaid 专用 IIFE/inlineDynamicImports 配置与其 CSP 实现保留，Cloudflare adapter 构建通过。
+
+产物测量：相对修改前同环境的构建，客户端 JS 总量由 6,347,540 bytes 增至 6,418,156 bytes（+70,616 bytes）；逐文件 gzip（Python gzip.compress，level 9）合计由 1,841,410 bytes 增至 1,868,113 bytes（+26,703 bytes）。文件 Worker 为 50,564 bytes / gzip 18,136 bytes；文本 MD5 按需块为 9,929 bytes / gzip 4,561 bytes。首页、JSON 与 SHA 文本运行时未请求这些引擎资源，MD5/文件操作才加载对应同源资源；嵌入的 WASM 无单独网络请求。上述为资源测量，并非所有访问者的实际传输量承诺。
+
+测试覆盖：标准 MD5 abc/空字符串及五种算法的独立 Node crypto 参照，中文/Emoji、空白/多行、Unicode 非规范化、空文件、含 0x00/0xFF 的二进制、改名、跨多个分块、正确/错误/无效预期值；浏览器覆盖选择/拖拽、切换、进度、取消/重试、清除、复制成功/失败、真实 Worker 文件读取异常、无 Worker 能力、延迟文本/Worker 结果隔离和导航清理。128 MiB 测试在实际 Worker 中记录逐块读取，强制拒绝超过 4 MiB 的读取，在 12 MiB 进度处取消，主线程仍能处理动画帧与交互。此证据证明计算缓冲按分块处理，不等于所有设备总内存峰值测量或无限文件大小保证。
+
+隐私边界：未发现文件、文本、预期值或哈希上传；没有 hash 输入的 localStorage/sessionStorage/IndexedDB 写入。网站原有 Google Fonts 资源请求单独识别，不计为哈希处理请求；Hash 不新增外部服务。文档说明 Web Crypto 的安全上下文要求、Worker/Blob/WebAssembly 能力要求、浏览器资源限制与 MD5 安全边界。
+
+验证结果：`bun run lint:fix`、`bun run check`、`bun run lint`、`bun run test:unit`、`bun run test:e2e`、`bun run build` 均通过；类型检查为 0 errors / 0 warnings。单元测试 79 项、422 个断言通过（本次新增 19 项）；默认 Chromium 开发端到端测试 27/27 通过。生产预览使用临时 Playwright 配置运行 Chromium 149、Firefox 151、WebKit 26.5，按当前测试清单逐项核对，三个浏览器各 27 项、去重共 81 项均有通过证据，包括 Hash、参考汇率和完整 Markdown/Mermaid/CSP 回归。长任务首轮在末尾被外部 SIGTERM 终止；修正 WebKit 会缓存故障注入脚本的测试夹具后，以 6/6 通过的补跑覆盖错误恢复及 Mermaid 依赖重试，再与当前 81 项清单核对无遗漏，未跳过失败项。
+
+界面与浏览器证明：1440×900 桌面、390×844 移动暗色截图已检查；目标 Hash 页面非空、标题与路由正确、无框架错误遮罩和相关控制台错误，目标布局未横向溢出。键盘可切换 Text/File 并显式计算空字符串；Chromium 原生 Clipboard 写入后读回结果一致，故障测试验证复制失败反馈。生产资源探针确认首页、JSON 和 SHA 文本不加载 MD5 块/文件 Worker，MD5 与文件操作按需请求本地资源，未请求外部 WASM。
+
+环境说明：Browser plugin not available，采用仓库 Playwright。浏览器安装与测试产物位于 /tmp；受限沙箱的 Wrangler/Miniflare 注册目录只读及回环代理影响通过 /tmp 本地模拟器目录和主机执行测试解决，保留系统凭证目录，未登录或访问远程 Cloudflare 资源。额外配置、截图、探针和临时注册数据未加入 Git。尚未进行实体设备、极端文件大小或所有浏览器总内存峰值测试；不承诺无限文件大小。仅本地提交，包含本文件，不 push、merge 或生产部署。
+
+修改/新增文件清单：src/routes/hash/+page.svelte、src/lib/utils/hash.ts、src/lib/workers/hash.worker.ts、src/lib/utils/hash.test.ts、tests/e2e/hash.e2e.ts、src/lib/utils/tools.ts、package.json、bun.lock、README.md、README.zh-CN.md、static/licenses/hash-wasm.txt、log.md。最终 Cloudflare 产物包含原始 MIT 许可证；Hash 页面、MD5 块和文件 Worker 的资源哈希及大小与上述浏览器验证版本一致，共享入口按 SvelteKit 构建版本号更新。
+
+最终产物复核：最后一次构建后，Chromium 对五种文本算法、实际多分块文件 Worker、响应式/隐私以及 11 类 Mermaid SVG 再做 4/4 冒烟验证通过；原始 hash-wasm MIT 许可证的生产预览 HTTP 响应与源文件逐字节一致。

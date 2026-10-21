@@ -29,7 +29,7 @@ PureTools is a lightweight, privacy-first, pure-frontend toolkit for developers.
 - URL Encoder: encode/decode (component/full URL)
 - QR Code Generator: generate and download QR codes from exact plain-text input
 - JWT Decoder: header/payload decode, time claim insights
-- Hash Tool: SHA-1/256/384/512 via Web Crypto
+- Hash Calculator & Verifier: MD5 and SHA-1/256/384/512 for exact UTF-8 text and local files, checksum comparison, chunked progress and cancellation
 - Timestamp Tool: timestamp <-> local datetime, seconds/milliseconds, local + UTC outputs, copy
 - GitHub CDN: convert GitHub/raw links to raw + jsDelivr URLs, copy
 - Reference exchange rates: read public reference rates while keeping amounts, conversion, and caching local
@@ -75,6 +75,18 @@ bun run dev
 ## Notes
 
 - Core processing runs locally in the browser and user input is not uploaded; the exchange-rate tool only downloads a public rate table.
+- `/hash` keeps SHA-256 as the default. Nonempty text is calculated after a 250 ms debounce;
+  use Calculate for empty text or a selected/dropped single file. Expected checksums accept outer
+  whitespace and either hex case; editing them only compares the existing result.
+- Hashing never uploads or persists text, files or expected checksums. SHA text uses Web Crypto
+  (HTTPS or localhost); MD5 text and all file algorithms use locally bundled, lazy-loaded
+  `hash-wasm` 4.12.0 ([MIT license](static/licenses/hash-wasm.txt), zero runtime dependencies). Files are read as raw bytes in sequential
+  4 MiB slices in a dedicated Web Worker; cancel, source changes and navigation terminate it.
+  Browsers must support Workers, Blob slice/arrayBuffer and WebAssembly for files; unsupported
+  environments show an error. There is no whole-file fallback or unlimited file-size guarantee:
+  browser/device resources and processing time still apply. Input data stays in page memory only.
+- Matching hashes do not establish a trusted source. MD5 has collision weaknesses and is unsuitable
+  for password storage, security signatures or protection against malicious tampering. Prefer SHA-256.
 - Local Translator requires desktop Chrome 138 or later. Translation models are downloaded and
   managed by Chrome on demand.
 - Playwright uses the bundled Chromium binary on Linux x64. Linux arm64/other architectures, macOS, and Windows use Playwright's native browser installation; run

@@ -29,7 +29,7 @@ PureTools 是一个轻量、隐私优先、纯前端的开发者工具集网站�
 - URL 编码：编码/解码（Component / Full URL）
 - 二维码生成器：将原始文本生成二维码并下载 PNG
 - JWT 解码：Header/Payload 解析、时间字段提示
-- Hash 工具：SHA-1/256/384/512（Web Crypto）
+- Hash 计算与校验：精确 UTF-8 文本与本地文件的 MD5、SHA-1/256/384/512，校验和比对、分块进度与取消
 - 时间戳工具：时间戳 <-> 本地时间，秒/毫秒，本地/UTC 输出、复制
 - GitHub CDN：GitHub/raw 链接转换为 Raw + jsDelivr，支持复制
 - 参考汇率转换：只读获取公开参考汇率，金额换算与缓存均在浏览器本地完成
@@ -75,6 +75,14 @@ bun run dev
 ## 说明
 
 - 所有工具的核心处理均在浏览器本地运行，不会上传用户输入；参考汇率工具仅下载公开汇率表。
+- `/hash` 保持 SHA-256 为默认算法。非空文本在 250 ms 防抖后自动计算；空文本与选择/拖入的
+  单个文件通过 Calculate 计算。预期校验和忽略首尾空白和十六进制大小写，修改预期值只比较已有结果。
+- 哈希工具不会上传或持久化文本、文件及预期校验和。SHA 文本继续使用 Web Crypto（需 HTTPS 或
+  localhost）；MD5 文本与全部文件算法复用本地打包、按需加载的 `hash-wasm` 4.12.0（[MIT 许可证](static/licenses/hash-wasm.txt)，零运行时依赖）。
+  文件按原始字节在独立 Web Worker 中顺序读取，每块最多 4 MiB；取消、切换输入及离开页面时终止 Worker。
+  文件处理需要浏览器支持 Workers、Blob slice/arrayBuffer 和 WebAssembly；缺少能力时显示错误，
+  不降级为整文件读取，也不承诺无限文件大小，仍受浏览器、设备资源与处理时间限制。输入仅保留在当前页面内存。
+- 哈希一致不能证明来源可信。MD5 存在碰撞风险，不适用于密码存储、安全签名或抗恶意篡改校验；优先选择 SHA-256。
 - 本地翻译需要桌面版 Chrome 138 或更高版本，翻译模型由 Chrome 按需下载和管理。
 - Playwright 在 Linux x64 上使用项目内置 Chromium；Linux arm64/其他架构、macOS 和 Windows 使用 Playwright 原生浏览器，首次运行前需执行
   `bunx playwright install chromium`。
