@@ -13,7 +13,7 @@ PureTools is a lightweight, privacy-first, pure-frontend toolkit for developers.
 - Pure frontend, no backend required
 - Privacy-first: data never leaves your device
 - Dark/light mode with system sync
-- Fast tool search with category grouping
+- Four navigation groups with a compact, scrollable Tools menu and global `/` search
 
 ## Tools
 
@@ -31,6 +31,7 @@ PureTools is a lightweight, privacy-first, pure-frontend toolkit for developers.
 - JWT Decoder: header/payload decode, time claim insights
 - Hash Calculator & Verifier: MD5 and SHA-1/256/384/512 for exact UTF-8 text and local files, checksum comparison, chunked progress and cancellation
 - Timestamp Tool: timestamp <-> local datetime, seconds/milliseconds, local + UTC outputs, copy
+- [Time Zone Converter & World Clock](docs/timezone.md): IANA regions, fixed PST/PDT offsets, explicit DST overlap/gap handling, live city clocks with saved preferences
 - GitHub CDN: convert GitHub/raw links to raw + jsDelivr URLs, copy
 - Reference exchange rates: read public reference rates while keeping amounts, conversion, and caching local
 

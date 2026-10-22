@@ -252,3 +252,27 @@ SQL Format
 修改/新增文件清单：src/routes/hash/+page.svelte、src/lib/utils/hash.ts、src/lib/workers/hash.worker.ts、src/lib/utils/hash.test.ts、tests/e2e/hash.e2e.ts、src/lib/utils/tools.ts、package.json、bun.lock、README.md、README.zh-CN.md、static/licenses/hash-wasm.txt、log.md。最终 Cloudflare 产物包含原始 MIT 许可证；Hash 页面、MD5 块和文件 Worker 的资源哈希及大小与上述浏览器验证版本一致，共享入口按 SvelteKit 构建版本号更新。
 
 最终产物复核：最后一次构建后，Chromium 对五种文本算法、实际多分块文件 Worker、响应式/隐私以及 11 类 Mermaid SVG 再做 4/4 冒烟验证通过；原始 hash-wasm MIT 许可证的生产预览 HTTP 响应与源文件逐字节一致。
+
+## 20261022
+
+需求来源：https://microbin.knowsky.uk/raw/aMplQe。新增独立 `/timezone`（Time Zone Converter & World Clock），并将全局九个分类映射为四个一级导航分组。重新核对的实现基线为 main `5fc50c6`，初始工作区干净；按本次要求仅本地提交，不 push、merge 或部署。
+
+时区实现：`src/lib/utils/timezone.ts` 使用原生 `Intl.DateTimeFormat` / IANA 数据，不新增日期库、Temporal/polyfill、全球时区数据库或时间 API。严格验证完整公历日期与 24 小时时间（0001–9999 年，可含秒及毫秒），以 UTC 日历字段表示 wall time，在该日附近 96 小时窗口逐小时采集实际偏移，再反向验证候选 instant。零候选明确拒绝不存在的当地时间，多候选展示 Earlier/Later 及对应 UTC 偏移和 ISO instant，必须显式选择；不通过系统时区 `new Date(localDateTimeString)` 解析其他地区时间，不静默归一化。覆盖美国、欧洲、南半球、Lord Howe 半小时跳变、跨日期线与历史秒级偏移；Formatter 和日期偏移缓存各限 128 项。
+
+换算页面：地区规则与 fixed PST（UTC−08:00）、PDT（UTC−07:00）、UTC 明确分开；支持本地时区检测、常用城市与 IANA 搜索、完整日期时间输入、自动目标结果/偏移/可用缩写/跨日提示、Now、Copy Result、交换源/目标。交换保留原 instant 与毫秒，也保留重复小时中已选择的实例；复用 Clipboard 封装并展示真实复制失败反馈。保留 `/timestamp` 原有逻辑，在两个工具间添加快捷入口，工具清单、首页、分类和关键词搜索共用原 registry。
+
+世界时钟：默认 Los Angeles、New York、London、Beijing（Asia/Shanghai）、Tokyo、Sydney，显示当地日期时间、偏移、可用缩写及相对本地日期的跨日信息。支持搜索添加/移除至多 24 个 IANA 地区、12/24 小时切换；仅城市 ID 与显示偏好保存到 `puretools.world-clock.v1`，不保存换算输入或结果。读取损坏配置时安全降级，存储受限时保留当前访问功能并提示，主题持久化也容忍存储异常。当前时间、设备时区、存储及定时器在 onMount 后初始化，避免 SSR 时间差；单个一秒计时器在隐藏时清除、可见时立即同步，离页销毁时清理监听器与计时器。缺少 supportedValuesOf 时使用运行时验证的常用城市，缺少核心 Intl 能力时明确反馈。页面说明设备系统时钟与浏览器时区规则的数据边界。
+
+导航：`navGroups` 保留原 category 结构，分别映射 Text & Data（Formatters/Text）、Generate & Encode（Identifiers/Encoding）、Dev & Security（Patterns/Security/Delivery）、Time & Convert（Time/Finance）。Tailwind xl（80rem，通常为 1280 CSS px 的有效 viewport）起显示四组，较窄屏幕统一 Tools 菜单；Search、Theme、GitHub 在 320px 仍可用。共享 popup 限制在 viewport 内并允许纵向滚动，提供 aria-expanded/controls、当前路由 aria-current、点击切换、ArrowDown 聚焦首项、Escape/关闭按钮返回触发器、外部点击/Tab 离开/导航及响应式模式变化时关闭。保留 `/` 搜索快捷键与名称、描述、分类、关键词匹配，不劫持输入编辑。
+
+已验证：`bun run lint:fix`、`bun run check`、`bun run lint` 均通过，Svelte 检查 0 errors / 0 warnings；`bun run test:unit` 92/92、1476 次断言通过，其中新增时区测试 13 项。当前 Bun/ICU 支持的 445 个地区分别验证冬夏日期反向解析；额外在 TZ=Pacific/Honolulu 下重跑时区测试 13/13，通过证据不依赖宿主恰好处于某个时区。`bun run test:e2e` Chromium 149 完整 51/51 通过，包含现有 Hash、Markdown/Mermaid/CSP 与汇率回归，以及新增 24 项页面/导航验收。导航覆盖 320、375、768、1024、1280、1440px 的深浅色，逐项对比首页与菜单入口；页面覆盖 DST 双实例、设备时区与目标不同、真实显示偏移、偏好保存与禁用存储、能力缺失、复制成功/失败、隐藏/恢复与离页计时器清理、刷新无 hydration 错误、无时间服务/业务后端请求。
+
+浏览器与环境记录：Browser plugin not available，采用仓库 Playwright；Ubuntu 24.04 arm64、Bun 1.4.3，浏览器缓存与新测试产物位于 /tmp。沙箱 IPv4 回环超时已与主机 HTTP 200/IPv6 HTTP 200 对比，改用主机执行浏览器验收；独立 Vite 服务一度退出 143（SIGTERM）导致连接拒绝，确认端口消失后改由 Playwright 管理服务器生命周期，完整回归重新通过。计时器夹具先暂停了 SvelteKit 路由所需的计时器，修正为导航前恢复模拟时钟后通过；未放宽应用逻辑或跳过断言。Wrangler/Miniflare 本地注册和日志定向 /tmp，系统凭证位置保持不变，未访问远程 Cloudflare 资源。
+
+截图与界面：1440×1000 浅色桌面、375×900 深色手机和手机 Tools 菜单截图已检查，目标 URL/标题和实际换算结果正确；页面非空、无框架错误遮罩、相关控制台错误为 0、横向溢出为 0。截图仅保留 /tmp。实体设备、真实 Safari/iOS 及不同系统时区数据库版本未逐项验收；当前时间不独立校准，时区缩写可能由浏览器返回 GMT 偏移。
+
+文件清单：新增 src/lib/utils/timezone.ts、src/lib/utils/timezone.test.ts、src/lib/components/TimeZonePicker.svelte、src/routes/timezone/+page.svelte、tests/e2e/timezone.e2e.ts、tests/e2e/navigation.e2e.ts、docs/timezone.md；修改 src/lib/utils/tools.ts、src/routes/+layout.svelte、src/routes/timestamp/+page.svelte、src/app.bun-test.d.ts、README.md、README.zh-CN.md、log.md。未新增依赖或全局自定义样式；未改写首页或其他工具业务逻辑。
+
+生产与最终兼容验收：`bun run build` 通过，SvelteKit Cloudflare adapter 完成并生成 `.svelte-kit/cloudflare/_worker.js`。同一生产预览产物上的 Firefox 151 与 WebKit 26.5 各 24/24 新增时区/导航用例全部通过；Chromium 149 完整回归再次 51/51 通过，最后媒体查询断言修正后对导航文件补跑 15/15 通过。三个浏览器的证明范围为 Chromium 全部现有与新增用例，以及 Firefox/WebKit 本次新增的全部用例；不将其表述为真实 Safari 或实体设备验收。生产 Chromium 另外逐一打开 19 个工具路由，均 HTTP 200、内容非空、无运行错误，并核对 Timestamp 秒/毫秒、日期转换及两页互链；汇率使用测试夹具，不是实际提供商验证。生产桌面/手机截图亦复核了正确标题/URL、PDT 示例输出、无错误遮罩、控制台错误 0 与横向溢出 0。
+
+WebKit 测试修正说明：传统竖向滚动条占用 8px，导致 scrollWidth 与 innerWidth 的差值为 −8；改为比较 scrollWidth 与真实 clientWidth，直接检验横向滚动。1280px 窗口下有效媒体 viewport 也可能低于 xl，响应式测试改用与 Tailwind 同一个 `(min-width: 80rem)` 查询判定预期模式，继续检查对应菜单、全部工具入口和布局范围；未强制隐藏滚动条、放宽溢出断言或改变应用行为。修正后的完整 Firefox/WebKit 48 项全部重跑通过，Chromium 导航 15 项补跑通过。生产构建后应用源码未再变动，仅调整上述测试与文档记录。

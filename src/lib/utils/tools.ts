@@ -9,6 +9,7 @@ import {
   FileCode2,
   FileText,
   Fingerprint,
+  Globe,
   Hash,
   KeyRound,
   Languages,
@@ -32,6 +33,13 @@ export const toolCategories = [
 ] as const;
 
 export type ToolCategory = (typeof toolCategories)[number];
+
+export const navGroups = [
+  { id: "text-data", name: "Text & Data", categories: ["Formatters", "Text"] },
+  { id: "generate-encode", name: "Generate & Encode", categories: ["Identifiers", "Encoding"] },
+  { id: "dev-security", name: "Dev & Security", categories: ["Patterns", "Security", "Delivery"] },
+  { id: "time-convert", name: "Time & Convert", categories: ["Time", "Finance"] },
+] as const satisfies readonly { id: string; name: string; categories: readonly ToolCategory[] }[];
 
 export type Tool = {
   name: string;
@@ -224,6 +232,27 @@ export const tools: Tool[] = [
     hoverColor: "group-hover:bg-orange-600 group-hover:text-white",
     category: "Time",
     keywords: ["timestamp", "epoch", "time", "unix"],
+  },
+  {
+    name: "Time Zone Converter",
+    description: "Convert global time zones, fixed PST/PDT, and follow world clocks",
+    icon: Globe,
+    href: "/timezone",
+    color: "bg-indigo-50 text-indigo-600 border-indigo-100",
+    hoverColor: "group-hover:bg-indigo-600 group-hover:text-white",
+    category: "Time",
+    keywords: [
+      "timezone",
+      "time zone",
+      "world clock",
+      "PST",
+      "PDT",
+      "UTC",
+      "GMT",
+      "DST",
+      "daylight saving",
+      "convert",
+    ],
   },
   {
     name: "GitHub CDN",

@@ -188,6 +188,9 @@ function isInRange(value: number, min: number, max: number): boolean {
 </script>
 
 <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+  <div class="mb-5 text-right">
+    <a href="/timezone" class="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 dark:text-indigo-400"><Globe size={16} /> Time Zone Converter &amp; World Clock →</a>
+  </div>
   <div class="grid gap-8 lg:grid-cols-2">
     <!-- Timestamp to Date -->
     <section class="flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition-shadow hover:shadow-md">
